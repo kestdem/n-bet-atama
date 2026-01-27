@@ -13,12 +13,14 @@
 
         :root {
             --army-green: #4a5d3e;
-            --dark-green: #3a4a31;
-            --cream: #e8dcc4;
-            --dark-cream: #d4c5a9;
+            --dark-green: #3a4d2e;
+            --cream: #d4c5a9;
+            --dark-cream: #b8a989;
             --black: #1a1a1a;
-            --light-bg: #f5f2ea;
-            --border: #8b8b7a;
+            --light-bg: #f4f0e6;
+            --border-color: #8b8166;
+            --error-red: #8b2e2e;
+            --success-green: #2e5d2e;
         }
 
         body {
@@ -38,41 +40,79 @@
             background: linear-gradient(135deg, var(--dark-green) 0%, var(--army-green) 100%);
             color: var(--cream);
             padding: 25px;
+            text-align: center;
             border-radius: 8px;
             margin-bottom: 30px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.3);
             border: 2px solid var(--dark-green);
         }
 
-        h1 {
-            text-align: center;
-            font-size: 2em;
-            text-transform: uppercase;
+        header h1 {
+            font-size: 2rem;
             letter-spacing: 2px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 3px solid var(--army-green);
+            padding-bottom: 10px;
+        }
+
+        .tab-button {
+            background: var(--cream);
+            color: var(--black);
+            border: 2px solid var(--border-color);
+            padding: 12px 24px;
+            cursor: pointer;
+            font-weight: 600;
+            border-radius: 5px 5px 0 0;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+
+        .tab-button:hover {
+            background: var(--dark-cream);
+        }
+
+        .tab-button.active {
+            background: var(--army-green);
+            color: var(--cream);
+            border-bottom: 2px solid var(--army-green);
+        }
+
+        .tab-content {
+            display: none;
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            border: 2px solid var(--border-color);
+        }
+
+        .tab-content.active {
+            display: block;
         }
 
         .section {
-            background: white;
-            padding: 25px;
             margin-bottom: 25px;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-            border: 1px solid var(--border);
+            padding: 20px;
+            background: var(--light-bg);
+            border-radius: 6px;
+            border-left: 4px solid var(--army-green);
         }
 
-        .section-title {
+        .section h2 {
             color: var(--dark-green);
-            font-size: 1.4em;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 3px solid var(--army-green);
+            margin-bottom: 15px;
+            font-size: 1.3rem;
             text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 8px;
         }
 
         label {
@@ -82,96 +122,107 @@
             color: var(--dark-green);
         }
 
-        input[type="file"],
+        input[type="text"],
         input[type="number"],
-        input[type="month"],
+        input[type="date"],
         textarea,
         select {
             width: 100%;
-            padding: 12px;
-            border: 2px solid var(--border);
+            padding: 10px;
+            border: 2px solid var(--border-color);
             border-radius: 4px;
-            font-size: 1em;
-            background: var(--light-bg);
-            transition: border-color 0.3s;
+            font-size: 1rem;
+            margin-bottom: 15px;
+            background: white;
         }
 
-        input:focus,
-        textarea:focus,
-        select:focus {
-            outline: none;
-            border-color: var(--army-green);
+        input[type="file"] {
+            margin-bottom: 15px;
+            padding: 8px;
+            border: 2px solid var(--border-color);
+            border-radius: 4px;
             background: white;
         }
 
         textarea {
-            min-height: 150px;
-            font-family: monospace;
+            min-height: 120px;
+            font-family: 'Courier New', monospace;
             resize: vertical;
         }
 
-        .hint {
-            font-size: 0.9em;
-            color: #666;
-            font-style: italic;
-            margin-top: 5px;
-        }
-
         button {
-            background: linear-gradient(135deg, var(--army-green) 0%, var(--dark-green) 100%);
+            background: var(--army-green);
             color: var(--cream);
-            border: none;
-            padding: 14px 28px;
-            font-size: 1em;
-            border-radius: 4px;
+            border: 2px solid var(--dark-green);
+            padding: 12px 24px;
             cursor: pointer;
+            border-radius: 5px;
             font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s;
             text-transform: uppercase;
             letter-spacing: 1px;
-            transition: all 0.3s;
-            box-shadow: 0 3px 6px rgba(0,0,0,0.2);
         }
 
         button:hover {
-            background: linear-gradient(135deg, var(--dark-green) 0%, var(--army-green) 100%);
+            background: var(--dark-green);
             transform: translateY(-2px);
-            box-shadow: 0 5px 10px rgba(0,0,0,0.3);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
         }
 
         button:active {
             transform: translateY(0);
         }
 
-        button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
+        button.secondary {
+            background: var(--dark-cream);
+            color: var(--black);
+            border-color: var(--border-color);
         }
 
-        .button-group {
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
+        button.secondary:hover {
+            background: var(--border-color);
+        }
+
+        button.danger {
+            background: var(--error-red);
+            border-color: #6b1e1e;
+        }
+
+        button.danger:hover {
+            background: #6b1e1e;
+        }
+
+        .hint {
+            background: #fff9e6;
+            border-left: 4px solid #f4c542;
+            padding: 12px;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+            color: #856404;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        th, td {
-            padding: 12px;
-            text-align: left;
-            border: 1px solid var(--border);
+            margin-top: 15px;
+            background: white;
         }
 
         th {
             background: var(--army-green);
             color: var(--cream);
+            padding: 12px;
+            text-align: left;
             font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            font-size: 0.9rem;
+            border: 1px solid var(--dark-green);
+        }
+
+        td {
+            padding: 10px 12px;
+            border: 1px solid var(--border-color);
         }
 
         tr:nth-child(even) {
@@ -179,58 +230,146 @@
         }
 
         tr:hover {
-            background: var(--dark-cream);
+            background: var(--cream);
         }
 
-        .manual-duty-list {
-            margin-top: 15px;
-            padding: 15px;
-            background: var(--light-bg);
+        .personnel-list {
+            max-height: 400px;
+            overflow-y: auto;
+            border: 2px solid var(--border-color);
             border-radius: 4px;
-            border: 1px solid var(--border);
+            padding: 10px;
+            background: white;
         }
 
-        .manual-duty-item {
+        .personnel-item {
+            background: var(--light-bg);
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            border-left: 4px solid var(--army-green);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 10px;
-            margin-bottom: 8px;
-            background: white;
-            border-radius: 4px;
-            border: 1px solid var(--border);
         }
 
-        .remove-btn {
-            background: #8b0000;
-            padding: 6px 12px;
-            font-size: 0.9em;
+        .personnel-info {
+            flex: 1;
         }
 
-        .remove-btn:hover {
-            background: #a00000;
-        }
-
-        .swap-section {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin-top: 20px;
-        }
-
-        .swap-box {
-            padding: 15px;
-            background: var(--light-bg);
-            border-radius: 4px;
-            border: 2px solid var(--border);
-        }
-
-        .swap-box h4 {
+        .personnel-name {
+            font-weight: 700;
             color: var(--dark-green);
-            margin-bottom: 10px;
+            font-size: 1.1rem;
+            margin-bottom: 5px;
         }
 
-        .statistics {
+        .personnel-constraints {
+            font-size: 0.85rem;
+            color: #555;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            border: 3px solid var(--army-green);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.5);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .modal-header h3 {
+            color: var(--dark-green);
+            text-transform: uppercase;
+        }
+
+        .close-modal {
+            background: var(--error-red);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            cursor: pointer;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
+        .close-modal:hover {
+            background: #6b1e1e;
+        }
+
+        .date-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .date-tag {
+            background: var(--army-green);
+            color: var(--cream);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .date-tag button {
+            background: transparent;
+            border: none;
+            color: var(--cream);
+            cursor: pointer;
+            padding: 0;
+            font-size: 1.2rem;
+            line-height: 1;
+        }
+
+        .weekend {
+            background: #fff3cd;
+        }
+
+        .locked {
+            background: #d1ecf1;
+            font-weight: 600;
+        }
+
+        .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 15px;
@@ -238,72 +377,93 @@
         }
 
         .stat-card {
-            background: var(--army-green);
-            color: var(--cream);
-            padding: 20px;
-            border-radius: 4px;
+            background: white;
+            padding: 15px;
+            border-radius: 6px;
+            border: 2px solid var(--border-color);
             text-align: center;
-            box-shadow: 0 3px 6px rgba(0,0,0,0.2);
         }
 
         .stat-value {
-            font-size: 2em;
-            font-weight: bold;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--army-green);
         }
 
         .stat-label {
-            font-size: 0.9em;
-            opacity: 0.9;
+            font-size: 0.9rem;
+            color: #666;
             margin-top: 5px;
+            text-transform: uppercase;
         }
 
-        .hidden {
-            display: none;
+        .rule-config {
+            padding-left: 30px;
         }
 
-        .alert {
-            padding: 15px;
+        .rule-config.disabled {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: var(--error-red);
+            padding: 12px;
             border-radius: 4px;
+            margin-bottom: 15px;
+            border-left: 4px solid var(--error-red);
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: var(--success-green);
+            padding: 12px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            border-left: 4px solid var(--success-green);
+        }
+
+        .swap-controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
             margin-bottom: 20px;
         }
 
-        .alert-success {
-            background: #d4edda;
-            border: 1px solid #c3e6cb;
-            color: #155724;
-        }
-
-        .alert-error {
-            background: #f8d7da;
-            border: 1px solid #f5c6cb;
-            color: #721c24;
-        }
-
-        .personnel-count {
-            color: var(--army-green);
-            font-weight: bold;
-            margin-top: 10px;
-        }
-
         @media (max-width: 768px) {
-            .swap-section {
+            .container {
+                padding: 10px;
+            }
+
+            header h1 {
+                font-size: 1.5rem;
+            }
+
+            .tabs {
+                flex-direction: column;
+            }
+
+            .tab-button {
+                width: 100%;
+            }
+
+            .swap-controls {
                 grid-template-columns: 1fr;
             }
 
-            .button-group {
+            .btn-group {
                 flex-direction: column;
             }
 
             button {
                 width: 100%;
-            }
-
-            table {
-                font-size: 0.9em;
-            }
-
-            th, td {
-                padding: 8px;
             }
         }
     </style>
@@ -311,505 +471,1278 @@
 <body>
     <div class="container">
         <header>
-            <h1>🎖️ Nöbet Çizelgesi Yönetim Sistemi 🎖️</h1>
+            <h1>🎖️ Nöbet Çizelgesi Yönetim Sistemi</h1>
         </header>
 
-        <!-- Personnel Input Section -->
-        <div class="section">
-            <h2 class="section-title">📋 1. Personel Bilgileri</h2>
-            
-            <div class="form-group">
-                <label for="personnelFile">TXT Dosyasından İçe Aktar:</label>
-                <input type="file" id="personnelFile" accept=".txt">
-                <div class="hint">TXT dosyasında her satır 1 kişiyi temsil etmelidir.</div>
-            </div>
-
-            <div class="form-group">
-                <label for="personnelText">Veya Manuel Olarak Girin (Her satıra bir isim):</label>
-                <textarea id="personnelText" placeholder="Ahmet Yılmaz&#10;Mehmet Demir&#10;Ayşe Kaya&#10;..."></textarea>
-            </div>
-
-            <button onclick="loadPersonnel()">Personel Listesini Yükle</button>
-            <div id="personnelCount" class="personnel-count"></div>
+        <div class="tabs">
+            <button class="tab-button active" onclick="switchTab('personnel')">Personel Yönetimi</button>
+            <button class="tab-button" onclick="switchTab('rules')">Kural Ayarları</button>
+            <button class="tab-button" onclick="switchTab('generate')">Çizelge Oluştur</button>
+            <button class="tab-button" onclick="switchTab('schedule')">Nöbet Çizelgesi</button>
+            <button class="tab-button" onclick="switchTab('swap')">Nöbet Değişimi</button>
         </div>
 
-        <!-- Duty Rules Section -->
-        <div class="section">
-            <h2 class="section-title">⚙️ 2. Nöbet Kuralları</h2>
-            
-            <div class="form-group">
-                <label for="monthSelect">Ay Seçin:</label>
-                <input type="month" id="monthSelect">
-            </div>
-
-            <div class="form-group">
-                <label for="maxDuties">Kişi Başı Maksimum Nöbet Sayısı:</label>
-                <input type="number" id="maxDuties" min="1" value="5">
-            </div>
-
-            <div class="form-group">
-                <label>Manuel Nöbet Atamaları:</label>
-                <div style="display: flex; gap: 10px; margin-bottom: 10px;">
-                    <select id="manualPerson" style="flex: 1;">
-                        <option value="">Personel seçin...</option>
-                    </select>
-                    <input type="date" id="manualDate" style="flex: 1;">
-                    <button onclick="addManualDuty()">Ekle</button>
+        <!-- Personnel Management Tab -->
+        <div id="personnel-tab" class="tab-content active">
+            <div class="section">
+                <h2>Personel Ekleme</h2>
+                
+                <div class="hint">
+                    💡 TXT dosyasında her satır: <strong>İsim,NöbetSayısı</strong> formatında olmalıdır.<br>
+                    Örnek: <code>Ahmet Yılmaz,3</code> veya <code>Mehmet Demir,5</code>
                 </div>
-                <div id="manualDutyList" class="manual-duty-list hidden"></div>
-            </div>
-        </div>
 
-        <!-- Generate Section -->
-        <div class="section">
-            <h2 class="section-title">🔄 3. Nöbet Çizelgesi Oluştur</h2>
-            <button onclick="generateDutySchedule()">Nöbet Çizelgesini Oluştur</button>
-            <div id="alert"></div>
-            <div id="statistics" class="statistics hidden"></div>
-            <div id="scheduleTable"></div>
-        </div>
+                <label for="txt-file">TXT Dosyasından İçe Aktar:</label>
+                <input type="file" id="txt-file" accept=".txt">
+                <button onclick="importFromFile()">Dosyadan Yükle</button>
 
-        <!-- Swap Section -->
-        <div class="section hidden" id="swapSection">
-            <h2 class="section-title">🔄 4. Nöbet Değiştirme</h2>
-            
-            <div class="swap-section">
-                <div class="swap-box">
-                    <h4>İlk Nöbet</h4>
-                    <label>Tarih:</label>
-                    <select id="swapDate1">
-                        <option value="">Tarih seçin...</option>
-                    </select>
-                    <div id="swapPerson1" style="margin-top: 10px; font-weight: bold; color: var(--army-green);"></div>
+                <div style="margin: 20px 0; text-align: center; color: var(--border-color); font-weight: 600;">
+                    - VEYA -
                 </div>
-                <div class="swap-box">
-                    <h4>İkinci Nöbet</h4>
-                    <label>Tarih:</label>
-                    <select id="swapDate2">
-                        <option value="">Tarih seçin...</option>
-                    </select>
-                    <div id="swapPerson2" style="margin-top: 10px; font-weight: bold; color: var(--army-green);"></div>
+
+                <label for="manual-input">Manuel Giriş (Her satıra: İsim,NöbetSayısı):</label>
+                <textarea id="manual-input" placeholder="Ahmet Yılmaz,3&#10;Mehmet Demir,5&#10;Ayşe Kaya,4"></textarea>
+                <button onclick="addPersonnelManually()">Manuel Ekle</button>
+            </div>
+
+            <div class="section">
+                <h2>Personel Listesi</h2>
+                <div id="personnel-list" class="personnel-list">
+                    <p style="text-align: center; color: #999;">Henüz personel eklenmedi.</p>
                 </div>
             </div>
-            
-            <div class="button-group" style="margin-top: 20px;">
-                <button onclick="swapDuties()">Nöbetleri Değiştir</button>
+        </div>
+
+        <!-- Rules Configuration Tab -->
+        <div id="rules-tab" class="tab-content">
+            <div class="section">
+                <h2>⚙️ Nöbet Kuralları Yapılandırması</h2>
+                
+                <div class="hint">
+                    ℹ️ Bu kurallar çizelge oluşturulurken otomatik olarak uygulanır. İhtiyacınıza göre özelleştirebilirsiniz.
+                </div>
+
+                <div style="background: white; padding: 20px; border-radius: 6px; margin-bottom: 20px;">
+                    <h3 style="color: var(--dark-green); margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
+                        <input type="checkbox" id="rule-max-per-week" checked onchange="updateRuleStatus()">
+                        <label for="rule-max-per-week" style="cursor: pointer; margin: 0;">Haftalık Nöbet Sınırı</label>
+                    </h3>
+                    <div id="rule-max-per-week-config" class="rule-config">
+                        <label for="max-duties-per-week">Kişi başı maksimum nöbet sayısı (haftalık):</label>
+                        <input type="number" id="max-duties-per-week" min="1" max="7" value="1">
+                        <p style="font-size: 0.9rem; color: #666; margin-top: 5px;">
+                            📌 Her kişi bir haftada en fazla bu kadar nöbet tutabilir.
+                        </p>
+                    </div>
+                </div>
+
+                <div style="background: white; padding: 20px; border-radius: 6px; margin-bottom: 20px;">
+                    <h3 style="color: var(--dark-green); margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
+                        <input type="checkbox" id="rule-min-gap" checked onchange="updateRuleStatus()">
+                        <label for="rule-min-gap" style="cursor: pointer; margin: 0;">Minimum Gün Aralığı</label>
+                    </h3>
+                    <div id="rule-min-gap-config" class="rule-config">
+                        <label for="min-days-gap">Aynı kişinin nöbetleri arasında minimum gün sayısı:</label>
+                        <input type="number" id="min-days-gap" min="0" max="14" value="3">
+                        <p style="font-size: 0.9rem; color: #666; margin-top: 5px;">
+                            📌 Bir kişinin iki nöbeti arasında en az bu kadar gün olmalıdır.
+                        </p>
+                    </div>
+                </div>
+
+                <div style="background: white; padding: 20px; border-radius: 6px; margin-bottom: 20px;">
+                    <h3 style="color: var(--dark-green); margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
+                        <input type="checkbox" id="rule-no-consecutive" checked onchange="updateRuleStatus()">
+                        <label for="rule-no-consecutive" style="cursor: pointer; margin: 0;">Ardışık Gün Yasağı</label>
+                    </h3>
+                    <div id="rule-no-consecutive-config" class="rule-config">
+                        <p style="font-size: 0.9rem; color: #666;">
+                            📌 Aynı kişi arka arkaya iki gün nöbet tutamaz (örn. Pazartesi ve Salı).
+                        </p>
+                    </div>
+                </div>
+
+                <div style="background: white; padding: 20px; border-radius: 6px; margin-bottom: 20px;">
+                    <h3 style="color: var(--dark-green); margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
+                        <input type="checkbox" id="rule-weekend-balance" checked onchange="updateRuleStatus()">
+                        <label for="rule-weekend-balance" style="cursor: pointer; margin: 0;">Hafta Sonu/İçi Dengesi</label>
+                    </h3>
+                    <div id="rule-weekend-balance-config" class="rule-config">
+                        <label for="weekend-balance-mode">Denge Modu:</label>
+                        <select id="weekend-balance-mode">
+                            <option value="strict">Sıkı: Hafta içi ≥ Hafta sonu (asla daha az olamaz)</option>
+                            <option value="prefer">Tercih: Hafta içi nöbetler öncelikli</option>
+                            <option value="none">Yok: Hafta sonu/içi dengesi kontrol edilmez</option>
+                        </select>
+                        <p style="font-size: 0.9rem; color: #666; margin-top: 5px;">
+                            📌 Kişi başına hafta sonu ve hafta içi nöbet dağılımı dengelenir.
+                        </p>
+                    </div>
+                </div>
+
+                <div style="background: white; padding: 20px; border-radius: 6px; margin-bottom: 20px;">
+                    <h3 style="color: var(--dark-green); margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
+                        <input type="checkbox" id="rule-fair-distribution" checked onchange="updateRuleStatus()">
+                        <label for="rule-fair-distribution" style="cursor: pointer; margin: 0;">Adil Dağılım</label>
+                    </h3>
+                    <div id="rule-fair-distribution-config" class="rule-config">
+                        <label for="distribution-mode">Dağılım Stratejisi:</label>
+                        <select id="distribution-mode">
+                            <option value="balanced">Dengeli: Herkes eşit nöbet tutar</option>
+                            <option value="priority">Öncelikli: Az nöbet tutanlar önce atanır</option>
+                            <option value="random">Rastgele: Uygun kişilerden rastgele seçilir</option>
+                        </select>
+                        <p style="font-size: 0.9rem; color: #666; margin-top: 5px;">
+                            📌 Nöbetler nasıl dağıtılsın?
+                        </p>
+                    </div>
+                </div>
+
+                <div class="btn-group">
+                    <button onclick="saveRules()">💾 Kuralları Kaydet</button>
+                    <button class="secondary" onclick="resetRulesToDefault()">🔄 Varsayılana Dön</button>
+                    <button class="secondary" onclick="loadPreset('relaxed')">😌 Esnek Kurallar</button>
+                    <button class="secondary" onclick="loadPreset('strict')">🎯 Katı Kurallar</button>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>📊 Aktif Kurallar Özeti</h2>
+                <div id="rules-summary" style="background: white; padding: 15px; border-radius: 6px; border-left: 4px solid var(--army-green);">
+                </div>
             </div>
         </div>
 
-        <!-- Export Section -->
-        <div class="section hidden" id="exportSection">
-            <h2 class="section-title">💾 5. Dışa Aktar</h2>
-            <button onclick="exportToCSV()">CSV Olarak İndir</button>
+        <!-- Generate Schedule Tab -->
+        <div id="generate-tab" class="tab-content">
+            <div class="section">
+                <h2>Çizelge Parametreleri</h2>
+                
+                <label for="schedule-month">Ay ve Yıl Seçin:</label>
+                <input type="month" id="schedule-month" required>
+
+                <button onclick="generateSchedule()" style="width: 100%; padding: 15px; font-size: 1.1rem;">
+                    🗓️ Çizelge Oluştur
+                </button>
+
+                <div id="generation-message"></div>
+            </div>
+
+            <div class="section">
+                <h2>Çizelge İstatistikleri</h2>
+                <div id="schedule-stats" class="stats-grid">
+                    <p style="text-align: center; color: #999;">Henüz çizelge oluşturulmadı.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Schedule View Tab -->
+        <div id="schedule-tab" class="tab-content">
+            <div class="section">
+                <h2>Aylık Nöbet Çizelgesi</h2>
+                
+                <div class="btn-group">
+                    <button onclick="exportToCSV()">📄 CSV Olarak Dışa Aktar</button>
+                    <button class="secondary" onclick="printSchedule()">🖨️ Yazdır</button>
+                </div>
+
+                <div id="schedule-table-container">
+                    <p style="text-align: center; color: #999; padding: 40px;">Henüz çizelge oluşturulmadı.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Swap Tab -->
+        <div id="swap-tab" class="tab-content">
+            <div class="section">
+                <h2>Nöbet Değişimi</h2>
+                
+                <div class="hint">
+                    ℹ️ İki nöbet gününü seçerek personel değişimi yapabilirsiniz.
+                </div>
+
+                <div class="swap-controls">
+                    <div>
+                        <label for="swap-date-1">1. Nöbet Günü:</label>
+                        <select id="swap-date-1">
+                            <option value="">Gün Seçin</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="swap-date-2">2. Nöbet Günü:</label>
+                        <select id="swap-date-2">
+                            <option value="">Gün Seçin</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button onclick="performSwap()" style="width: 100%;">🔄 Nöbetleri Değiştir</button>
+
+                <div id="swap-message"></div>
+
+                <div style="margin-top: 30px;">
+                    <h3 style="color: var(--dark-green); margin-bottom: 15px;">Güncel Çizelge Önizleme</h3>
+                    <div id="swap-preview">
+                        <p style="text-align: center; color: #999;">Henüz çizelge oluşturulmadı.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Personnel Edit Modal -->
+    <div id="edit-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Personel Düzenle</h3>
+                <button class="close-modal" onclick="closeEditModal()">✕</button>
+            </div>
+
+            <input type="hidden" id="edit-person-index">
+
+            <label>İsim:</label>
+            <input type="text" id="edit-person-name" disabled>
+
+            <label for="edit-max-duties">Maksimum Aylık Nöbet Sayısı:</label>
+            <input type="number" id="edit-max-duties" min="0" value="10">
+
+            <label for="edit-exception-date">Müsait Olmadığı Tarihler:</label>
+            <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                <input type="date" id="edit-exception-date" style="flex: 1;">
+                <button onclick="addExceptionDate()">Ekle</button>
+            </div>
+            <div id="exception-dates-list" class="date-list"></div>
+
+            <label for="edit-fixed-date">Manuel Sabit Nöbet Tarihleri:</label>
+            <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                <input type="date" id="edit-fixed-date" style="flex: 1;">
+                <button onclick="addFixedDate()">Ekle</button>
+            </div>
+            <div id="fixed-dates-list" class="date-list"></div>
+
+            <div class="btn-group">
+                <button onclick="savePersonnelEdit()">💾 Kaydet</button>
+                <button class="secondary" onclick="closeEditModal()">İptal</button>
+            </div>
         </div>
     </div>
 
     <script>
-        // Global variables
+        // Global state
         let personnel = [];
-        let dutySchedule = [];
-        let manualDuties = [];
-        let selectedMonth = '';
-
-        // Day names in Turkish
-        const dayNames = ['Pazar', 'Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma', 'Cumartesi'];
-
-        // Initialize month selector with current month
-        window.onload = function() {
-            const now = new Date();
-            const monthStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
-            document.getElementById('monthSelect').value = monthStr;
+        let schedule = [];
+        let currentEditIndex = -1;
+        
+        // Rules configuration
+        let rulesConfig = {
+            maxDutiesPerWeek: {
+                enabled: true,
+                value: 1
+            },
+            minDaysGap: {
+                enabled: true,
+                value: 3
+            },
+            noConsecutive: {
+                enabled: true
+            },
+            weekendBalance: {
+                enabled: true,
+                mode: 'strict' // 'strict', 'prefer', 'none'
+            },
+            fairDistribution: {
+                enabled: true,
+                mode: 'balanced' // 'balanced', 'priority', 'random'
+            }
         };
 
-        // Load personnel from file
-        document.getElementById('personnelFile').addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    document.getElementById('personnelText').value = event.target.result;
-                    loadPersonnel();
-                };
-                reader.readAsText(file);
-            }
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set default month to current month
+            const now = new Date();
+            const monthInput = document.getElementById('schedule-month');
+            monthInput.value = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+            
+            // Initialize rules summary
+            updateRulesSummary();
         });
 
-        // Load personnel into system
-        function loadPersonnel() {
-            const text = document.getElementById('personnelText').value.trim();
-            if (!text) {
-                showAlert('Lütfen personel listesi girin!', 'error');
-                return;
-            }
-
-            personnel = text.split('\n')
-                .map(name => name.trim())
-                .filter(name => name.length > 0);
-
-            if (personnel.length === 0) {
-                showAlert('Geçerli personel bulunamadı!', 'error');
-                return;
-            }
-
-            // Remove duplicates
-            personnel = [...new Set(personnel)];
-
-            // Update manual person selector
-            const select = document.getElementById('manualPerson');
-            select.innerHTML = '<option value="">Personel seçin...</option>';
-            personnel.forEach(person => {
-                const option = document.createElement('option');
-                option.value = person;
-                option.textContent = person;
-                select.appendChild(option);
-            });
-
-            document.getElementById('personnelCount').textContent = 
-                `✓ ${personnel.length} personel yüklendi`;
+        // Tab switching
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
             
-            showAlert(`${personnel.length} personel başarıyla yüklendi!`, 'success');
+            event.target.classList.add('active');
+            document.getElementById(tabName + '-tab').classList.add('active');
+
+            if (tabName === 'swap' || tabName === 'schedule') {
+                updateSwapSelects();
+                updateSwapPreview();
+            }
         }
 
-        // Add manual duty assignment
-        function addManualDuty() {
-            const person = document.getElementById('manualPerson').value;
-            const date = document.getElementById('manualDate').value;
-
-            if (!person || !date) {
-                showAlert('Lütfen personel ve tarih seçin!', 'error');
+        // Import from file
+        function importFromFile() {
+            const fileInput = document.getElementById('txt-file');
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                alert('Lütfen bir dosya seçin.');
                 return;
             }
 
-            // Check if date already has manual duty
-            const exists = manualDuties.find(d => d.date === date);
-            if (exists) {
-                showAlert('Bu tarih için zaten manuel atama var!', 'error');
-                return;
-            }
-
-            manualDuties.push({ person, date });
-            updateManualDutyList();
-            
-            // Reset inputs
-            document.getElementById('manualPerson').value = '';
-            document.getElementById('manualDate').value = '';
-        }
-
-        // Update manual duty list display
-        function updateManualDutyList() {
-            const list = document.getElementById('manualDutyList');
-            
-            if (manualDuties.length === 0) {
-                list.classList.add('hidden');
-                return;
-            }
-
-            list.classList.remove('hidden');
-            list.innerHTML = '<strong>Manuel Atamalar:</strong>';
-            
-            manualDuties.sort((a, b) => new Date(a.date) - new Date(b.date));
-            
-            manualDuties.forEach((duty, index) => {
-                const dateObj = new Date(duty.date + 'T00:00:00');
-                const dayName = dayNames[dateObj.getDay()];
-                const formattedDate = dateObj.toLocaleDateString('tr-TR');
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const content = e.target.result;
+                const lines = content.split('\n')
+                    .map(line => line.trim())
+                    .filter(line => line.length > 0);
                 
-                const item = document.createElement('div');
-                item.className = 'manual-duty-item';
-                item.innerHTML = `
-                    <span>${formattedDate} (${dayName}) - <strong>${duty.person}</strong></span>
-                    <button class="remove-btn" onclick="removeManualDuty(${index})">Kaldır</button>
-                `;
-                list.appendChild(item);
+                let addedCount = 0;
+                let errors = [];
+                
+                lines.forEach((line, index) => {
+                    const parts = line.split(',').map(p => p.trim());
+                    
+                    if (parts.length !== 2) {
+                        errors.push(`Satır ${index + 1}: Geçersiz format. Format: İsim,NöbetSayısı`);
+                        return;
+                    }
+                    
+                    const name = parts[0];
+                    const dutyCount = parseInt(parts[1]);
+                    
+                    if (!name || name.length === 0) {
+                        errors.push(`Satır ${index + 1}: İsim boş olamaz`);
+                        return;
+                    }
+                    
+                    if (isNaN(dutyCount) || dutyCount < 0) {
+                        errors.push(`Satır ${index + 1}: Geçersiz nöbet sayısı (${parts[1]})`);
+                        return;
+                    }
+                    
+                    if (!personnel.find(p => p.name === name)) {
+                        personnel.push({
+                            name: name,
+                            maxDutiesPerMonth: dutyCount,
+                            exceptionDates: [],
+                            fixedDates: []
+                        });
+                        addedCount++;
+                    } else {
+                        // Update existing person's duty count
+                        const existing = personnel.find(p => p.name === name);
+                        existing.maxDutiesPerMonth = dutyCount;
+                        addedCount++;
+                    }
+                });
+                
+                updatePersonnelList();
+                
+                if (errors.length > 0) {
+                    alert(`${addedCount} personel eklendi/güncellendi.\n\nHatalar:\n${errors.join('\n')}`);
+                } else {
+                    alert(`${addedCount} personel başarıyla eklendi/güncellendi.`);
+                }
+                
+                fileInput.value = '';
+            };
+            
+            reader.readAsText(file);
+        }
+
+        // Add personnel manually
+        function addPersonnelManually() {
+            const input = document.getElementById('manual-input');
+            const lines = input.value.split('\n')
+                .map(line => line.trim())
+                .filter(line => line.length > 0);
+            
+            if (lines.length === 0) {
+                alert('Lütfen en az bir satır girin.');
+                return;
+            }
+
+            let addedCount = 0;
+            let errors = [];
+            
+            lines.forEach((line, index) => {
+                const parts = line.split(',').map(p => p.trim());
+                
+                if (parts.length !== 2) {
+                    errors.push(`Satır ${index + 1}: Geçersiz format. Format: İsim,NöbetSayısı`);
+                    return;
+                }
+                
+                const name = parts[0];
+                const dutyCount = parseInt(parts[1]);
+                
+                if (!name || name.length === 0) {
+                    errors.push(`Satır ${index + 1}: İsim boş olamaz`);
+                    return;
+                }
+                
+                if (isNaN(dutyCount) || dutyCount < 0) {
+                    errors.push(`Satır ${index + 1}: Geçersiz nöbet sayısı (${parts[1]})`);
+                    return;
+                }
+                
+                if (!personnel.find(p => p.name === name)) {
+                    personnel.push({
+                        name: name,
+                        maxDutiesPerMonth: dutyCount,
+                        exceptionDates: [],
+                        fixedDates: []
+                    });
+                    addedCount++;
+                } else {
+                    // Update existing person's duty count
+                    const existing = personnel.find(p => p.name === name);
+                    existing.maxDutiesPerMonth = dutyCount;
+                    addedCount++;
+                }
             });
+            
+            updatePersonnelList();
+            
+            if (errors.length > 0) {
+                alert(`${addedCount} personel eklendi/güncellendi.\n\nHatalar:\n${errors.join('\n')}`);
+            } else {
+                alert(`${addedCount} personel başarıyla eklendi/güncellendi.`);
+            }
+            
+            input.value = '';
         }
 
-        // Remove manual duty
-        function removeManualDuty(index) {
-            manualDuties.splice(index, 1);
-            updateManualDutyList();
-        }
-
-        // Generate duty schedule
-        function generateDutySchedule() {
+        // Update personnel list display
+        function updatePersonnelList() {
+            const container = document.getElementById('personnel-list');
+            
             if (personnel.length === 0) {
-                showAlert('Önce personel listesini yükleyin!', 'error');
+                container.innerHTML = '<p style="text-align: center; color: #999;">Henüz personel eklenmedi.</p>';
                 return;
             }
 
-            const monthStr = document.getElementById('monthSelect').value;
-            if (!monthStr) {
-                showAlert('Lütfen bir ay seçin!', 'error');
+            container.innerHTML = personnel.map((person, index) => `
+                <div class="personnel-item">
+                    <div class="personnel-info">
+                        <div class="personnel-name">${person.name}</div>
+                        <div class="personnel-constraints">
+                            Max Nöbet: ${person.maxDutiesPerMonth}/ay | 
+                            İstisna Tarih: ${person.exceptionDates.length} | 
+                            Sabit Nöbet: ${person.fixedDates.length}
+                        </div>
+                    </div>
+                    <div>
+                        <button onclick="editPersonnel(${index})">✏️ Düzenle</button>
+                        <button class="danger" onclick="deletePersonnel(${index})" style="margin-left: 5px;">🗑️ Sil</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Edit personnel
+        function editPersonnel(index) {
+            currentEditIndex = index;
+            const person = personnel[index];
+
+            document.getElementById('edit-person-index').value = index;
+            document.getElementById('edit-person-name').value = person.name;
+            document.getElementById('edit-max-duties').value = person.maxDutiesPerMonth;
+            
+            updateExceptionDatesList();
+            updateFixedDatesList();
+            
+            document.getElementById('edit-modal').classList.add('active');
+        }
+
+        // Close edit modal
+        function closeEditModal() {
+            document.getElementById('edit-modal').classList.remove('active');
+            currentEditIndex = -1;
+        }
+
+        // Add exception date
+        function addExceptionDate() {
+            const dateInput = document.getElementById('edit-exception-date');
+            const date = dateInput.value;
+            
+            if (!date) {
+                alert('Lütfen bir tarih seçin.');
                 return;
             }
 
-            const maxDuties = parseInt(document.getElementById('maxDuties').value);
-            if (maxDuties < 1) {
-                showAlert('Maksimum nöbet sayısı en az 1 olmalıdır!', 'error');
+            const person = personnel[currentEditIndex];
+            if (!person.exceptionDates.includes(date)) {
+                person.exceptionDates.push(date);
+                updateExceptionDatesList();
+                dateInput.value = '';
+            }
+        }
+
+        // Update exception dates list
+        function updateExceptionDatesList() {
+            const container = document.getElementById('exception-dates-list');
+            const person = personnel[currentEditIndex];
+            
+            if (person.exceptionDates.length === 0) {
+                container.innerHTML = '<p style="color: #999; font-size: 0.9rem;">Henüz istisna tarih eklenmedi.</p>';
                 return;
             }
 
-            selectedMonth = monthStr;
+            container.innerHTML = person.exceptionDates.map(date => `
+                <div class="date-tag">
+                    ${formatDate(date)}
+                    <button onclick="removeExceptionDate('${date}')">✕</button>
+                </div>
+            `).join('');
+        }
+
+        // Remove exception date
+        function removeExceptionDate(date) {
+            const person = personnel[currentEditIndex];
+            person.exceptionDates = person.exceptionDates.filter(d => d !== date);
+            updateExceptionDatesList();
+        }
+
+        // Add fixed date
+        function addFixedDate() {
+            const dateInput = document.getElementById('edit-fixed-date');
+            const date = dateInput.value;
+            
+            if (!date) {
+                alert('Lütfen bir tarih seçin.');
+                return;
+            }
+
+            const person = personnel[currentEditIndex];
+            if (!person.fixedDates.includes(date)) {
+                person.fixedDates.push(date);
+                updateFixedDatesList();
+                dateInput.value = '';
+            }
+        }
+
+        // Update fixed dates list
+        function updateFixedDatesList() {
+            const container = document.getElementById('fixed-dates-list');
+            const person = personnel[currentEditIndex];
+            
+            if (person.fixedDates.length === 0) {
+                container.innerHTML = '<p style="color: #999; font-size: 0.9rem;">Henüz sabit nöbet tarihi eklenmedi.</p>';
+                return;
+            }
+
+            container.innerHTML = person.fixedDates.map(date => `
+                <div class="date-tag">
+                    ${formatDate(date)}
+                    <button onclick="removeFixedDate('${date}')">✕</button>
+                </div>
+            `).join('');
+        }
+
+        // Remove fixed date
+        function removeFixedDate(date) {
+            const person = personnel[currentEditIndex];
+            person.fixedDates = person.fixedDates.filter(d => d !== date);
+            updateFixedDatesList();
+        }
+
+        // Save personnel edit
+        function savePersonnelEdit() {
+            const index = currentEditIndex;
+            const maxDuties = parseInt(document.getElementById('edit-max-duties').value);
+            
+            personnel[index].maxDutiesPerMonth = maxDuties;
+            
+            updatePersonnelList();
+            closeEditModal();
+            alert('Personel bilgileri güncellendi.');
+        }
+
+        // Delete personnel
+        function deletePersonnel(index) {
+            if (confirm(`${personnel[index].name} personelini silmek istediğinize emin misiniz?`)) {
+                personnel.splice(index, 1);
+                updatePersonnelList();
+            }
+        }
+
+        // Rules Management Functions
+        function updateRuleStatus() {
+            const rules = [
+                { id: 'rule-max-per-week', config: 'rule-max-per-week-config' },
+                { id: 'rule-min-gap', config: 'rule-min-gap-config' },
+                { id: 'rule-no-consecutive', config: 'rule-no-consecutive-config' },
+                { id: 'rule-weekend-balance', config: 'rule-weekend-balance-config' },
+                { id: 'rule-fair-distribution', config: 'rule-fair-distribution-config' }
+            ];
+
+            rules.forEach(rule => {
+                const checkbox = document.getElementById(rule.id);
+                const configDiv = document.getElementById(rule.config);
+                
+                if (checkbox.checked) {
+                    configDiv.classList.remove('disabled');
+                } else {
+                    configDiv.classList.add('disabled');
+                }
+            });
+
+            updateRulesSummary();
+        }
+
+        function saveRules() {
+            // Save rule configurations
+            rulesConfig.maxDutiesPerWeek.enabled = document.getElementById('rule-max-per-week').checked;
+            rulesConfig.maxDutiesPerWeek.value = parseInt(document.getElementById('max-duties-per-week').value);
+
+            rulesConfig.minDaysGap.enabled = document.getElementById('rule-min-gap').checked;
+            rulesConfig.minDaysGap.value = parseInt(document.getElementById('min-days-gap').value);
+
+            rulesConfig.noConsecutive.enabled = document.getElementById('rule-no-consecutive').checked;
+
+            rulesConfig.weekendBalance.enabled = document.getElementById('rule-weekend-balance').checked;
+            rulesConfig.weekendBalance.mode = document.getElementById('weekend-balance-mode').value;
+
+            rulesConfig.fairDistribution.enabled = document.getElementById('rule-fair-distribution').checked;
+            rulesConfig.fairDistribution.mode = document.getElementById('distribution-mode').value;
+
+            updateRulesSummary();
+            alert('✅ Kurallar kaydedildi!');
+        }
+
+        function resetRulesToDefault() {
+            document.getElementById('rule-max-per-week').checked = true;
+            document.getElementById('max-duties-per-week').value = 1;
+
+            document.getElementById('rule-min-gap').checked = true;
+            document.getElementById('min-days-gap').value = 3;
+
+            document.getElementById('rule-no-consecutive').checked = true;
+
+            document.getElementById('rule-weekend-balance').checked = true;
+            document.getElementById('weekend-balance-mode').value = 'strict';
+
+            document.getElementById('rule-fair-distribution').checked = true;
+            document.getElementById('distribution-mode').value = 'balanced';
+
+            updateRuleStatus();
+            saveRules();
+        }
+
+        function loadPreset(preset) {
+            if (preset === 'relaxed') {
+                // Relaxed rules - easier to satisfy
+                document.getElementById('rule-max-per-week').checked = true;
+                document.getElementById('max-duties-per-week').value = 2;
+
+                document.getElementById('rule-min-gap').checked = true;
+                document.getElementById('min-days-gap').value = 1;
+
+                document.getElementById('rule-no-consecutive').checked = false;
+
+                document.getElementById('rule-weekend-balance').checked = true;
+                document.getElementById('weekend-balance-mode').value = 'prefer';
+
+                document.getElementById('rule-fair-distribution').checked = true;
+                document.getElementById('distribution-mode').value = 'priority';
+
+                alert('😌 Esnek kurallar yüklendi: Haftalık 2 nöbet, 1 gün ara, ardışık gün izinli, hafta sonu tercihi.');
+            } else if (preset === 'strict') {
+                // Strict rules - harder to satisfy
+                document.getElementById('rule-max-per-week').checked = true;
+                document.getElementById('max-duties-per-week').value = 1;
+
+                document.getElementById('rule-min-gap').checked = true;
+                document.getElementById('min-days-gap').value = 4;
+
+                document.getElementById('rule-no-consecutive').checked = true;
+
+                document.getElementById('rule-weekend-balance').checked = true;
+                document.getElementById('weekend-balance-mode').value = 'strict';
+
+                document.getElementById('rule-fair-distribution').checked = true;
+                document.getElementById('distribution-mode').value = 'balanced';
+
+                alert('🎯 Katı kurallar yüklendi: Haftalık 1 nöbet, 4 gün ara, ardışık gün yasak, sıkı hafta sonu dengesi.');
+            }
+
+            updateRuleStatus();
+            saveRules();
+        }
+
+        function updateRulesSummary() {
+            const summary = document.getElementById('rules-summary');
+            if (!summary) return;
+
+            let html = '<ul style="list-style: none; padding: 0; margin: 0;">';
+
+            // Max duties per week
+            if (document.getElementById('rule-max-per-week').checked) {
+                const value = document.getElementById('max-duties-per-week').value;
+                html += `<li style="padding: 8px 0; border-bottom: 1px solid #eee;">✅ <strong>Haftalık Limit:</strong> Kişi başı maksimum ${value} nöbet</li>`;
+            } else {
+                html += `<li style="padding: 8px 0; border-bottom: 1px solid #eee;">❌ <strong>Haftalık Limit:</strong> Devre dışı</li>`;
+            }
+
+            // Min gap
+            if (document.getElementById('rule-min-gap').checked) {
+                const value = document.getElementById('min-days-gap').value;
+                html += `<li style="padding: 8px 0; border-bottom: 1px solid #eee;">✅ <strong>Minimum Ara:</strong> ${value} gün</li>`;
+            } else {
+                html += `<li style="padding: 8px 0; border-bottom: 1px solid #eee;">❌ <strong>Minimum Ara:</strong> Devre dışı</li>`;
+            }
+
+            // No consecutive
+            if (document.getElementById('rule-no-consecutive').checked) {
+                html += `<li style="padding: 8px 0; border-bottom: 1px solid #eee;">✅ <strong>Ardışık Gün:</strong> Yasak</li>`;
+            } else {
+                html += `<li style="padding: 8px 0; border-bottom: 1px solid #eee;">❌ <strong>Ardışık Gün:</strong> İzinli</li>`;
+            }
+
+            // Weekend balance
+            if (document.getElementById('rule-weekend-balance').checked) {
+                const mode = document.getElementById('weekend-balance-mode').value;
+                const modeText = mode === 'strict' ? 'Sıkı' : mode === 'prefer' ? 'Tercih' : 'Yok';
+                html += `<li style="padding: 8px 0; border-bottom: 1px solid #eee;">✅ <strong>Hafta Sonu Dengesi:</strong> ${modeText}</li>`;
+            } else {
+                html += `<li style="padding: 8px 0; border-bottom: 1px solid #eee;">❌ <strong>Hafta Sonu Dengesi:</strong> Devre dışı</li>`;
+            }
+
+            // Fair distribution
+            if (document.getElementById('rule-fair-distribution').checked) {
+                const mode = document.getElementById('distribution-mode').value;
+                const modeText = mode === 'balanced' ? 'Dengeli' : mode === 'priority' ? 'Öncelikli' : 'Rastgele';
+                html += `<li style="padding: 8px 0;">✅ <strong>Dağılım:</strong> ${modeText}</li>`;
+            } else {
+                html += `<li style="padding: 8px 0;">❌ <strong>Dağılım:</strong> Devre dışı</li>`;
+            }
+
+            html += '</ul>';
+            summary.innerHTML = html;
+        }
+
+        // Generate schedule
+        function generateSchedule() {
+            const messageContainer = document.getElementById('generation-message');
+            messageContainer.innerHTML = '';
+
+            if (personnel.length === 0) {
+                messageContainer.innerHTML = '<div class="error-message">❌ Lütfen önce personel ekleyin.</div>';
+                return;
+            }
+
+            const monthInput = document.getElementById('schedule-month').value;
+            if (!monthInput) {
+                messageContainer.innerHTML = '<div class="error-message">❌ Lütfen bir ay seçin.</div>';
+                return;
+            }
+
+            // Validate scheduling feasibility
+            const validation = validateSchedulingFeasibility(monthInput);
+            if (!validation.isValid) {
+                messageContainer.innerHTML = `<div class="error-message">❌ Çizelge Oluşturulamıyor!<br><br>${validation.errors.join('<br>')}</div>`;
+                return;
+            }
+
+            try {
+                schedule = createSchedule(monthInput);
+                messageContainer.innerHTML = '<div class="success-message">✅ Çizelge başarıyla oluşturuldu!</div>';
+                displayScheduleStats();
+                displayScheduleTable();
+                updateSwapSelects();
+                
+                // Switch to schedule tab
+                setTimeout(() => {
+                    document.querySelector('[onclick="switchTab(\'schedule\')"]').click();
+                }, 1000);
+            } catch (error) {
+                messageContainer.innerHTML = `<div class="error-message">❌ Hata: ${error.message}</div>`;
+            }
+        }
+
+        // Validate if schedule can be created with given constraints
+        function validateSchedulingFeasibility(monthStr) {
             const [year, month] = monthStr.split('-').map(Number);
             const daysInMonth = new Date(year, month, 0).getDate();
-
-            // Initialize duty schedule
-            dutySchedule = [];
-            const dutyCounts = {};
-            personnel.forEach(p => dutyCounts[p] = 0);
-
-            // Add manual duties first
-            for (let day = 1; day <= daysInMonth; day++) {
-                const dateStr = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-                const manual = manualDuties.find(d => d.date === dateStr);
+            
+            const errors = [];
+            
+            // Calculate total required duties
+            const totalDutiesRequired = daysInMonth;
+            
+            // Calculate total available duty slots from personnel
+            let totalAvailableSlots = 0;
+            personnel.forEach(person => {
+                totalAvailableSlots += person.maxDutiesPerMonth;
+            });
+            
+            // Check 1: Total capacity
+            if (totalAvailableSlots < totalDutiesRequired) {
+                errors.push(`⚠️ Yetersiz Kapasite: ${totalDutiesRequired} gün nöbet var, ancak personel toplamda sadece ${totalAvailableSlots} nöbet tutabilir. En az ${totalDutiesRequired - totalAvailableSlots} nöbet daha gerekli.`);
+            }
+            
+            // Check 2: Minimum personnel count for weekly distribution (if enabled)
+            if (rulesConfig.maxDutiesPerWeek.enabled) {
+                const weeksInMonth = Math.ceil(daysInMonth / 7);
+                const maxDutiesPerWeek = rulesConfig.maxDutiesPerWeek.value;
+                const minPersonnelNeeded = Math.ceil(daysInMonth / (weeksInMonth * maxDutiesPerWeek));
                 
-                if (manual) {
-                    dutySchedule.push({
-                        date: dateStr,
-                        person: manual.person,
-                        isManual: true
-                    });
-                    dutyCounts[manual.person]++;
-                } else {
-                    dutySchedule.push({
-                        date: dateStr,
-                        person: null,
-                        isManual: false
-                    });
+                if (personnel.length < minPersonnelNeeded) {
+                    errors.push(`⚠️ Yetersiz Personel: Haftalık ${maxDutiesPerWeek} nöbet kuralı için en az ${minPersonnelNeeded} personel gerekli, ${personnel.length} personel var.`);
                 }
+            }
+            
+            // Check 3: Individual duty limits vs month length (if min gap enabled)
+            if (rulesConfig.minDaysGap.enabled) {
+                personnel.forEach(person => {
+                    if (person.maxDutiesPerMonth > 0) {
+                        const minGap = rulesConfig.minDaysGap.value;
+                        const maxPossibleDuties = Math.floor(daysInMonth / (minGap + 1)) + 1;
+                        
+                        if (person.maxDutiesPerMonth > maxPossibleDuties) {
+                            errors.push(`⚠️ ${person.name}: ${person.maxDutiesPerMonth} nöbet çok fazla. Bu ay için ${minGap} günlük ara kuralıyla maksimum ~${maxPossibleDuties} nöbet mümkün.`);
+                        }
+                    }
+                });
+            }
+            
+            // Check 4: Fixed dates conflicts
+            const fixedDatesMap = {};
+            personnel.forEach(person => {
+                person.fixedDates.forEach(date => {
+                    if (date.startsWith(`${year}-${String(month).padStart(2, '0')}`)) {
+                        if (fixedDatesMap[date]) {
+                            errors.push(`⚠️ Tarih Çakışması: ${formatDate(date)} tarihinde birden fazla kişi sabit nöbet olarak atanmış (${fixedDatesMap[date]}, ${person.name}).`);
+                        } else {
+                            fixedDatesMap[date] = person.name;
+                        }
+                    }
+                });
+            });
+            
+            // Check 5: Weekend/weekday balance feasibility (if enabled and strict)
+            if (rulesConfig.weekendBalance.enabled && rulesConfig.weekendBalance.mode === 'strict') {
+                let weekendDays = 0;
+                let weekdayDays = 0;
+                
+                for (let day = 1; day <= daysInMonth; day++) {
+                    const date = new Date(year, month - 1, day);
+                    const dayOfWeek = date.getDay();
+                    if (dayOfWeek === 0 || dayOfWeek === 6) {
+                        weekendDays++;
+                    } else {
+                        weekdayDays++;
+                    }
+                }
+                
+                // Each person can take max weekdayDays duties (to maintain balance)
+                const totalWeekendCapacity = personnel.reduce((sum, p) => {
+                    return sum + Math.floor(p.maxDutiesPerMonth / 2);
+                }, 0);
+                
+                if (totalWeekendCapacity < weekendDays) {
+                    errors.push(`⚠️ Hafta Sonu Dengesi: ${weekendDays} hafta sonu günü var, ancak personel sıkı hafta sonu/içi dengesi ile maksimum ${totalWeekendCapacity} hafta sonu nöbeti tutabilir. Denge modunu 'Tercih' veya 'Yok' yapın ya da personel limitleri yükseltin.`);
+                }
+            }
+            
+            // Check 6: At least some personnel with reasonable duty counts
+            const reasonablePersonnel = personnel.filter(p => p.maxDutiesPerMonth >= 2);
+            if (reasonablePersonnel.length < 3 && daysInMonth > 10) {
+                errors.push(`⚠️ Az Nöbet Sınırı: Çoğu personelin nöbet sınırı çok düşük. Dengeli dağılım için daha fazla personele daha yüksek limitler verin.`);
+            }
+            
+            return {
+                isValid: errors.length === 0,
+                errors: errors
+            };
+        }
+
+        // Create schedule algorithm
+        function createSchedule(monthStr) {
+            const [year, month] = monthStr.split('-').map(Number);
+            const daysInMonth = new Date(year, month, 0).getDate();
+            const newSchedule = [];
+
+            // Initialize schedule with fixed dates
+            for (let day = 1; day <= daysInMonth; day++) {
+                const date = new Date(year, month - 1, day);
+                const dateStr = formatDateISO(date);
+                
+                let assignedPerson = null;
+                
+                // Check for fixed dates
+                for (const person of personnel) {
+                    if (person.fixedDates.includes(dateStr)) {
+                        assignedPerson = person.name;
+                        break;
+                    }
+                }
+                
+                newSchedule.push({
+                    date: dateStr,
+                    dayOfWeek: date.getDay(),
+                    dayName: getDayName(date.getDay()),
+                    assignedTo: assignedPerson,
+                    isWeekend: date.getDay() === 0 || date.getDay() === 6,
+                    isLocked: assignedPerson !== null
+                });
             }
 
             // Assign remaining duties
-            for (let i = 0; i < dutySchedule.length; i++) {
-                if (dutySchedule[i].person !== null) continue;
+            const unassignedDays = newSchedule.filter(day => !day.assignedTo);
+            
+            // Create duty tracking for each person
+            const dutyTracking = personnel.map(person => ({
+                name: person.name,
+                weekdayDuties: 0,
+                weekendDuties: 0,
+                totalDuties: 0,
+                lastDutyDate: null,
+                maxDuties: person.maxDutiesPerMonth,
+                exceptionDates: person.exceptionDates,
+                fixedDates: person.fixedDates
+            }));
 
-                // Get available personnel
-                const available = personnel.filter(person => {
+            // Count fixed duties
+            newSchedule.forEach(day => {
+                if (day.assignedTo) {
+                    const personTrack = dutyTracking.find(p => p.name === day.assignedTo);
+                    if (personTrack) {
+                        personTrack.totalDuties++;
+                        if (day.isWeekend) {
+                            personTrack.weekendDuties++;
+                        } else {
+                            personTrack.weekdayDuties++;
+                        }
+                        personTrack.lastDutyDate = day.date;
+                    }
+                }
+            });
+
+            // Assign unassigned days
+            for (const day of unassignedDays) {
+                const eligiblePersonnel = dutyTracking.filter(person => {
+                    // Check exception dates
+                    if (person.exceptionDates.includes(day.date)) return false;
+                    
                     // Check max duties
-                    if (dutyCounts[person] >= maxDuties) return false;
-
-                    // Check consecutive days
-                    if (i > 0 && dutySchedule[i - 1].person === person) return false;
-                    if (i < dutySchedule.length - 1 && dutySchedule[i + 1].person === person) return false;
-
+                    if (person.totalDuties >= person.maxDuties) return false;
+                    
+                    // Check weekly limit (if enabled)
+                    if (rulesConfig.maxDutiesPerWeek.enabled) {
+                        const weekStart = getWeekStart(day.date);
+                        const weekEnd = getWeekEnd(day.date);
+                        const dutiesThisWeek = newSchedule.filter(d => 
+                            d.assignedTo === person.name && 
+                            d.date >= weekStart && 
+                            d.date <= weekEnd
+                        ).length;
+                        if (dutiesThisWeek >= rulesConfig.maxDutiesPerWeek.value) return false;
+                    }
+                    
+                    // Check minimum gap (if enabled)
+                    if (rulesConfig.minDaysGap.enabled && person.lastDutyDate) {
+                        const daysBetween = daysBetweenDates(person.lastDutyDate, day.date);
+                        if (daysBetween < rulesConfig.minDaysGap.value) return false;
+                    }
+                    
+                    // Check consecutive days (if enabled)
+                    if (rulesConfig.noConsecutive.enabled && person.lastDutyDate) {
+                        const daysBetween = daysBetweenDates(person.lastDutyDate, day.date);
+                        if (daysBetween === 1) return false;
+                    }
+                    
+                    // Check weekend/weekday balance (if enabled and strict)
+                    if (rulesConfig.weekendBalance.enabled && rulesConfig.weekendBalance.mode === 'strict') {
+                        if (day.isWeekend) {
+                            if (person.weekendDuties >= person.weekdayDuties) return false;
+                        }
+                    }
+                    
                     return true;
                 });
 
-                if (available.length === 0) {
-                    showAlert('Nöbet çizelgesi oluşturulamadı! Kurallar çok kısıtlayıcı olabilir.', 'error');
-                    return;
+                if (eligiblePersonnel.length === 0) {
+                    throw new Error(`${day.date} tarihine uygun personel bulunamadı. Kuralları gevşetmeyi veya personel sayısını artırmayı deneyin.`);
                 }
 
-                // Select person with least duties
-                available.sort((a, b) => dutyCounts[a] - dutyCounts[b]);
-                const selectedPerson = available[0];
+                // Select person based on distribution mode
+                let selectedPerson;
+                
+                if (!rulesConfig.fairDistribution.enabled || rulesConfig.fairDistribution.mode === 'random') {
+                    // Random selection
+                    selectedPerson = eligiblePersonnel[Math.floor(Math.random() * eligiblePersonnel.length)];
+                } else if (rulesConfig.fairDistribution.mode === 'priority') {
+                    // Priority: least duties first
+                    eligiblePersonnel.sort((a, b) => a.totalDuties - b.totalDuties);
+                    selectedPerson = eligiblePersonnel[0];
+                } else {
+                    // Balanced: consider weekend balance too
+                    eligiblePersonnel.sort((a, b) => {
+                        if (rulesConfig.weekendBalance.enabled && (rulesConfig.weekendBalance.mode === 'strict' || rulesConfig.weekendBalance.mode === 'prefer')) {
+                            if (day.isWeekend) {
+                                const aBalance = a.weekdayDuties - a.weekendDuties;
+                                const bBalance = b.weekdayDuties - b.weekendDuties;
+                                if (aBalance !== bBalance) return bBalance - aBalance;
+                            }
+                        }
+                        return a.totalDuties - b.totalDuties;
+                    });
+                    selectedPerson = eligiblePersonnel[0];
+                }
 
-                dutySchedule[i].person = selectedPerson;
-                dutyCounts[selectedPerson]++;
+                day.assignedTo = selectedPerson.name;
+                
+                // Update tracking
+                selectedPerson.totalDuties++;
+                if (day.isWeekend) {
+                    selectedPerson.weekendDuties++;
+                } else {
+                    selectedPerson.weekdayDuties++;
+                }
+                selectedPerson.lastDutyDate = day.date;
             }
 
-            displayDutySchedule();
-            updateSwapSelectors();
-            showStatistics(dutyCounts);
-            
-            document.getElementById('swapSection').classList.remove('hidden');
-            document.getElementById('exportSection').classList.remove('hidden');
-            
-            showAlert('Nöbet çizelgesi başarıyla oluşturuldu!', 'success');
+            return newSchedule;
         }
 
-        // Display duty schedule in table
-        function displayDutySchedule() {
-            const container = document.getElementById('scheduleTable');
+        // Display schedule stats
+        function displayScheduleStats() {
+            const container = document.getElementById('schedule-stats');
+            const stats = calculateStats();
+
+            container.innerHTML = `
+                <div class="stat-card">
+                    <div class="stat-value">${schedule.length}</div>
+                    <div class="stat-label">Toplam Gün</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${stats.totalWeekends}</div>
+                    <div class="stat-label">Hafta Sonu</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${stats.totalWeekdays}</div>
+                    <div class="stat-label">Hafta İçi</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${personnel.length}</div>
+                    <div class="stat-label">Aktif Personel</div>
+                </div>
+            `;
+        }
+
+        // Calculate statistics
+        function calculateStats() {
+            const totalWeekends = schedule.filter(d => d.isWeekend).length;
+            const totalWeekdays = schedule.filter(d => !d.isWeekend).length;
+
+            return { totalWeekends, totalWeekdays };
+        }
+
+        // Display schedule table
+        function displayScheduleTable() {
+            const container = document.getElementById('schedule-table-container');
             
-            let html = `
+            if (schedule.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #999; padding: 40px;">Henüz çizelge oluşturulmadı.</p>';
+                return;
+            }
+
+            const tableHTML = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Tarih</th>
+                            <th>Gün</th>
+                            <th>Görevli Personel</th>
+                            <th>Durum</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${schedule.map(day => `
+                            <tr class="${day.isWeekend ? 'weekend' : ''}">
+                                <td>${formatDate(day.date)}</td>
+                                <td>${day.dayName}</td>
+                                <td><strong>${day.assignedTo}</strong></td>
+                                <td>
+                                    ${day.isWeekend ? '📅 Hafta Sonu' : '📋 Hafta İçi'}
+                                    ${day.isLocked ? ' 🔒 Sabit' : ''}
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+
+            container.innerHTML = tableHTML;
+        }
+
+        // Update swap selects
+        function updateSwapSelects() {
+            const select1 = document.getElementById('swap-date-1');
+            const select2 = document.getElementById('swap-date-2');
+
+            if (schedule.length === 0) {
+                select1.innerHTML = '<option value="">Gün Seçin</option>';
+                select2.innerHTML = '<option value="">Gün Seçin</option>';
+                return;
+            }
+
+            const options = schedule
+                .filter(day => !day.isLocked)
+                .map(day => `
+                    <option value="${day.date}">
+                        ${formatDate(day.date)} - ${day.dayName} - ${day.assignedTo}
+                    </option>
+                `).join('');
+
+            select1.innerHTML = '<option value="">Gün Seçin</option>' + options;
+            select2.innerHTML = '<option value="">Gün Seçin</option>' + options;
+        }
+
+        // Perform swap
+        function performSwap() {
+            const messageContainer = document.getElementById('swap-message');
+            messageContainer.innerHTML = '';
+
+            const date1 = document.getElementById('swap-date-1').value;
+            const date2 = document.getElementById('swap-date-2').value;
+
+            if (!date1 || !date2) {
+                messageContainer.innerHTML = '<div class="error-message">❌ Lütfen iki nöbet günü seçin.</div>';
+                return;
+            }
+
+            if (date1 === date2) {
+                messageContainer.innerHTML = '<div class="error-message">❌ Aynı günü iki kez seçemezsiniz.</div>';
+                return;
+            }
+
+            const day1 = schedule.find(d => d.date === date1);
+            const day2 = schedule.find(d => d.date === date2);
+
+            if (day1.isLocked || day2.isLocked) {
+                messageContainer.innerHTML = '<div class="error-message">❌ Sabit nöbetler değiştirilemez.</div>';
+                return;
+            }
+
+            // Swap
+            const temp = day1.assignedTo;
+            day1.assignedTo = day2.assignedTo;
+            day2.assignedTo = temp;
+
+            messageContainer.innerHTML = '<div class="success-message">✅ Nöbet değişimi başarıyla yapıldı!</div>';
+            displayScheduleTable();
+            updateSwapPreview();
+            updateSwapSelects();
+        }
+
+        // Update swap preview
+        function updateSwapPreview() {
+            const container = document.getElementById('swap-preview');
+            
+            if (schedule.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #999;">Henüz çizelge oluşturulmadı.</p>';
+                return;
+            }
+
+            const previewHTML = `
                 <table>
                     <thead>
                         <tr>
                             <th>Tarih</th>
                             <th>Gün</th>
                             <th>Görevli</th>
-                            <th>Durum</th>
                         </tr>
                     </thead>
                     <tbody>
+                        ${schedule.slice(0, 10).map(day => `
+                            <tr class="${day.isWeekend ? 'weekend' : ''} ${day.isLocked ? 'locked' : ''}">
+                                <td>${formatDate(day.date)}</td>
+                                <td>${day.dayName}</td>
+                                <td>${day.assignedTo}</td>
+                            </tr>
+                        `).join('')}
+                        ${schedule.length > 10 ? '<tr><td colspan="3" style="text-align: center; color: #999;">...</td></tr>' : ''}
+                    </tbody>
+                </table>
             `;
 
-            dutySchedule.forEach(duty => {
-                const dateObj = new Date(duty.date + 'T00:00:00');
-                const dayName = dayNames[dateObj.getDay()];
-                const formattedDate = dateObj.toLocaleDateString('tr-TR');
-                const status = duty.isManual ? '🔒 Manuel' : '🔄 Otomatik';
-
-                html += `
-                    <tr>
-                        <td>${formattedDate}</td>
-                        <td>${dayName}</td>
-                        <td><strong>${duty.person}</strong></td>
-                        <td>${status}</td>
-                    </tr>
-                `;
-            });
-
-            html += '</tbody></table>';
-            container.innerHTML = html;
-        }
-
-        // Show statistics
-        function showStatistics(dutyCounts) {
-            const container = document.getElementById('statistics');
-            container.classList.remove('hidden');
-
-            const totalDuties = dutySchedule.length;
-            const assigned = dutySchedule.filter(d => d.person !== null).length;
-            const manualCount = dutySchedule.filter(d => d.isManual).length;
-
-            let html = `
-                <div class="stat-card">
-                    <div class="stat-value">${totalDuties}</div>
-                    <div class="stat-label">Toplam Gün</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value">${assigned}</div>
-                    <div class="stat-label">Atanan Nöbet</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value">${manualCount}</div>
-                    <div class="stat-label">Manuel Atama</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value">${personnel.length}</div>
-                    <div class="stat-label">Toplam Personel</div>
-                </div>
-            `;
-
-            container.innerHTML = html;
-        }
-
-        // Update swap date selectors
-        function updateSwapSelectors() {
-            const select1 = document.getElementById('swapDate1');
-            const select2 = document.getElementById('swapDate2');
-
-            select1.innerHTML = '<option value="">Tarih seçin...</option>';
-            select2.innerHTML = '<option value="">Tarih seçin...</option>';
-
-            dutySchedule.forEach((duty, index) => {
-                const dateObj = new Date(duty.date + 'T00:00:00');
-                const dayName = dayNames[dateObj.getDay()];
-                const formattedDate = dateObj.toLocaleDateString('tr-TR');
-                const displayText = `${formattedDate} (${dayName}) - ${duty.person}`;
-
-                const option1 = document.createElement('option');
-                option1.value = index;
-                option1.textContent = displayText;
-                select1.appendChild(option1);
-
-                const option2 = document.createElement('option');
-                option2.value = index;
-                option2.textContent = displayText;
-                select2.appendChild(option2);
-            });
-
-            select1.addEventListener('change', () => updateSwapPreview('swapPerson1', select1.value));
-            select2.addEventListener('change', () => updateSwapPreview('swapPerson2', select2.value));
-        }
-
-        // Update swap preview
-        function updateSwapPreview(elementId, index) {
-            const element = document.getElementById(elementId);
-            if (index === '') {
-                element.textContent = '';
-            } else {
-                element.textContent = `Görevli: ${dutySchedule[index].person}`;
-            }
-        }
-
-        // Swap duties
-        function swapDuties() {
-            const index1 = document.getElementById('swapDate1').value;
-            const index2 = document.getElementById('swapDate2').value;
-
-            if (!index1 || !index2) {
-                showAlert('Lütfen iki tarih seçin!', 'error');
-                return;
-            }
-
-            if (index1 === index2) {
-                showAlert('Aynı tarihi seçemezsiniz!', 'error');
-                return;
-            }
-
-            const i1 = parseInt(index1);
-            const i2 = parseInt(index2);
-
-            // Swap persons
-            const temp = dutySchedule[i1].person;
-            dutySchedule[i1].person = dutySchedule[i2].person;
-            dutySchedule[i2].person = temp;
-
-            // Update manual status if needed
-            dutySchedule[i1].isManual = false;
-            dutySchedule[i2].isManual = false;
-
-            displayDutySchedule();
-            updateSwapSelectors();
-            
-            // Reset selections
-            document.getElementById('swapDate1').value = '';
-            document.getElementById('swapDate2').value = '';
-            document.getElementById('swapPerson1').textContent = '';
-            document.getElementById('swapPerson2').textContent = '';
-
-            showAlert('Nöbetler başarıyla değiştirildi!', 'success');
+            container.innerHTML = previewHTML;
         }
 
         // Export to CSV
         function exportToCSV() {
-            if (dutySchedule.length === 0) {
-                showAlert('Önce nöbet çizelgesi oluşturun!', 'error');
+            if (schedule.length === 0) {
+                alert('Henüz çizelge oluşturulmadı.');
                 return;
             }
 
-            let csv = 'Tarih,Gün,Görevli\n';
-
-            dutySchedule.forEach(duty => {
-                const dateObj = new Date(duty.date + 'T00:00:00');
-                const dayName = dayNames[dateObj.getDay()];
-                const formattedDate = dateObj.toLocaleDateString('tr-TR');
-
-                csv += `${formattedDate},${dayName},${duty.person}\n`;
+            let csv = 'Tarih,Gün,Görevli Personel\n';
+            schedule.forEach(day => {
+                csv += `${formatDate(day.date)},${day.dayName},${day.assignedTo}\n`;
             });
 
-            // Create download
             const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
             const link = document.createElement('a');
             const url = URL.createObjectURL(blob);
             
-            const [year, month] = selectedMonth.split('-');
-            const fileName = `Nobet_Cizelgesi_${year}_${month}.csv`;
-            
             link.setAttribute('href', url);
-            link.setAttribute('download', fileName);
+            link.setAttribute('download', `nobet_cizelgesi_${new Date().getTime()}.csv`);
             link.style.visibility = 'hidden';
+            
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
-
-            showAlert('CSV dosyası indirildi!', 'success');
         }
 
-        // Show alert message
-        function showAlert(message, type) {
-            const alertDiv = document.getElementById('alert');
-            alertDiv.className = `alert alert-${type}`;
-            alertDiv.textContent = message;
-            alertDiv.style.display = 'block';
+        // Print schedule
+        function printSchedule() {
+            if (schedule.length === 0) {
+                alert('Henüz çizelge oluşturulmadı.');
+                return;
+            }
+            window.print();
+        }
 
-            setTimeout(() => {
-                alertDiv.style.display = 'none';
-            }, 5000);
+        // Utility functions
+        function formatDate(dateStr) {
+            const date = new Date(dateStr);
+            return date.toLocaleDateString('tr-TR');
+        }
+
+        function formatDateISO(date) {
+            return date.toISOString().split('T')[0];
+        }
+
+        function getDayName(dayOfWeek) {
+            const days = ['Pazar', 'Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma', 'Cumartesi'];
+            return days[dayOfWeek];
+        }
+
+        function getWeekStart(dateStr) {
+            const date = new Date(dateStr);
+            const day = date.getDay();
+            const diff = date.getDate() - day + (day === 0 ? -6 : 1); // Monday
+            return formatDateISO(new Date(date.setDate(diff)));
+        }
+
+        function getWeekEnd(dateStr) {
+            const date = new Date(dateStr);
+            const day = date.getDay();
+            const diff = date.getDate() - day + (day === 0 ? 0 : 7); // Sunday
+            return formatDateISO(new Date(date.setDate(diff)));
+        }
+
+        function daysBetweenDates(date1Str, date2Str) {
+            const date1 = new Date(date1Str);
+            const date2 = new Date(date2Str);
+            const diffTime = Math.abs(date2 - date1);
+            return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
         }
     </script>
 </body>
-  </html>
+</html>
