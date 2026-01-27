@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nöbet Çizelgesi Sistemi</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --army-green: #4a5d3e;
+            --dark-green: #3a4a31;
+            --cream: #e8dcc4;
+            --dark-cream: #d4c5a9;
+            --black: #1a1a1a;
+            --light-bg: #f5f2ea;
+            --border: #8b8b7a;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--light-bg) 0%, var(--cream) 100%);
+            color: var(--black);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--dark-green) 0%, var(--army-green) 100%);
+            color: var(--cream);
+            padding: 25px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            border: 2px solid var(--dark-green);
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2em;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .section {
+            background: white;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            border: 1px solid var(--border);
+        }
+
+        .section-title {
+            color: var(--dark-green);
+            font-size: 1.4em;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid var(--army-green);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark-green);
+        }
+
+        input[type="file"],
+        input[type="number"],
+        input[type="month"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--border);
+            border-radius: 4px;
+            font-size: 1em;
+            background: var(--light-bg);
+            transition: border-color 0.3s;
+        }
+
+        input:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--army-green);
+            background: white;
+        }
+
+        textarea {
+            min-height: 150px;
+            font-family: monospace;
+            resize: vertical;
+        }
+
+        .hint {
+            font-size: 0.9em;
+            color: #666;
+            font-style: italic;
+            margin-top: 5px;
+        }
+
+        button {
+            background: linear-gradient(135deg, var(--army-green) 0%, var(--dark-green) 100%);
+            color: var(--cream);
+            border: none;
+            padding: 14px 28px;
+            font-size: 1em;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+        }
+
+        button:hover {
+            background: linear-gradient(135deg, var(--dark-green) 0%, var(--army-green) 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 10px rgba(0,0,0,0.3);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid var(--border);
+        }
+
+        th {
+            background: var(--army-green);
+            color: var(--cream);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        tr:nth-child(even) {
+            background: var(--light-bg);
+        }
+
+        tr:hover {
+            background: var(--dark-cream);
+        }
+
+        .manual-duty-list {
+            margin-top: 15px;
+            padding: 15px;
+            background: var(--light-bg);
+            border-radius: 4px;
+            border: 1px solid var(--border);
+        }
+
+        .manual-duty-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            margin-bottom: 8px;
+            background: white;
+            border-radius: 4px;
+            border: 1px solid var(--border);
+        }
+
+        .remove-btn {
+            background: #8b0000;
+            padding: 6px 12px;
+            font-size: 0.9em;
+        }
+
+        .remove-btn:hover {
+            background: #a00000;
+        }
+
+        .swap-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .swap-box {
+            padding: 15px;
+            background: var(--light-bg);
+            border-radius: 4px;
+            border: 2px solid var(--border);
+        }
+
+        .swap-box h4 {
+            color: var(--dark-green);
+            margin-bottom: 10px;
+        }
+
+        .statistics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .stat-card {
+            background: var(--army-green);
+            color: var(--cream);
+            padding: 20px;
+            border-radius: 4px;
+            text-align: center;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+        }
+
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.9;
+            margin-top: 5px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+
+        .personnel-count {
+            color: var(--army-green);
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .swap-section {
+                grid-template-columns: 1fr;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            button {
+                width: 100%;
+            }
+
+            table {
+                font-size: 0.9em;
+            }
+
+            th, td {
+                padding: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎖️ Nöbet Çizelgesi Yönetim Sistemi 🎖️</h1>
+        </header>
+
+        <!-- Personnel Input Section -->
+        <div class="section">
+            <h2 class="section-title">📋 1. Personel Bilgileri</h2>
+            
+            <div class="form-group">
+                <label for="personnelFile">TXT Dosyasından İçe Aktar:</label>
+                <input type="file" id="personnelFile" accept=".txt">
+                <div class="hint">TXT dosyasında her satır 1 kişiyi temsil etmelidir.</div>
+            </div>
+
+            <div class="form-group">
+                <label for="personnelText">Veya Manuel Olarak Girin (Her satıra bir isim):</label>
+                <textarea id="personnelText" placeholder="Ahmet Yılmaz&#10;Mehmet Demir&#10;Ayşe Kaya&#10;..."></textarea>
+            </div>
+
+            <button onclick="loadPersonnel()">Personel Listesini Yükle</button>
+            <div id="personnelCount" class="personnel-count"></div>
+        </div>
+
+        <!-- Duty Rules Section -->
+        <div class="section">
+            <h2 class="section-title">⚙️ 2. Nöbet Kuralları</h2>
+            
+            <div class="form-group">
+                <label for="monthSelect">Ay Seçin:</label>
+                <input type="month" id="monthSelect">
+            </div>
+
+            <div class="form-group">
+                <label for="maxDuties">Kişi Başı Maksimum Nöbet Sayısı:</label>
+                <input type="number" id="maxDuties" min="1" value="5">
+            </div>
+
+            <div class="form-group">
+                <label>Manuel Nöbet Atamaları:</label>
+                <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                    <select id="manualPerson" style="flex: 1;">
+                        <option value="">Personel seçin...</option>
+                    </select>
+                    <input type="date" id="manualDate" style="flex: 1;">
+                    <button onclick="addManualDuty()">Ekle</button>
+                </div>
+                <div id="manualDutyList" class="manual-duty-list hidden"></div>
+            </div>
+        </div>
+
+        <!-- Generate Section -->
+        <div class="section">
+            <h2 class="section-title">🔄 3. Nöbet Çizelgesi Oluştur</h2>
+            <button onclick="generateDutySchedule()">Nöbet Çizelgesini Oluştur</button>
+            <div id="alert"></div>
+            <div id="statistics" class="statistics hidden"></div>
+            <div id="scheduleTable"></div>
+        </div>
+
+        <!-- Swap Section -->
+        <div class="section hidden" id="swapSection">
+            <h2 class="section-title">🔄 4. Nöbet Değiştirme</h2>
+            
+            <div class="swap-section">
+                <div class="swap-box">
+                    <h4>İlk Nöbet</h4>
+                    <label>Tarih:</label>
+                    <select id="swapDate1">
+                        <option value="">Tarih seçin...</option>
+                    </select>
+                    <div id="swapPerson1" style="margin-top: 10px; font-weight: bold; color: var(--army-green);"></div>
+                </div>
+                <div class="swap-box">
+                    <h4>İkinci Nöbet</h4>
+                    <label>Tarih:</label>
+                    <select id="swapDate2">
+                        <option value="">Tarih seçin...</option>
+                    </select>
+                    <div id="swapPerson2" style="margin-top: 10px; font-weight: bold; color: var(--army-green);"></div>
+                </div>
+            </div>
+            
+            <div class="button-group" style="margin-top: 20px;">
+                <button onclick="swapDuties()">Nöbetleri Değiştir</button>
+            </div>
+        </div>
+
+        <!-- Export Section -->
+        <div class="section hidden" id="exportSection">
+            <h2 class="section-title">💾 5. Dışa Aktar</h2>
+            <button onclick="exportToCSV()">CSV Olarak İndir</button>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let personnel = [];
+        let dutySchedule = [];
+        let manualDuties = [];
+        let selectedMonth = '';
+
+        // Day names in Turkish
+        const dayNames = ['Pazar', 'Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma', 'Cumartesi'];
+
+        // Initialize month selector with current month
+        window.onload = function() {
+            const now = new Date();
+            const monthStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+            document.getElementById('monthSelect').value = monthStr;
+        };
+
+        // Load personnel from file
+        document.getElementById('personnelFile').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    document.getElementById('personnelText').value = event.target.result;
+                    loadPersonnel();
+                };
+                reader.readAsText(file);
+            }
+        });
+
+        // Load personnel into system
+        function loadPersonnel() {
+            const text = document.getElementById('personnelText').value.trim();
+            if (!text) {
+                showAlert('Lütfen personel listesi girin!', 'error');
+                return;
+            }
+
+            personnel = text.split('\n')
+                .map(name => name.trim())
+                .filter(name => name.length > 0);
+
+            if (personnel.length === 0) {
+                showAlert('Geçerli personel bulunamadı!', 'error');
+                return;
+            }
+
+            // Remove duplicates
+            personnel = [...new Set(personnel)];
+
+            // Update manual person selector
+            const select = document.getElementById('manualPerson');
+            select.innerHTML = '<option value="">Personel seçin...</option>';
+            personnel.forEach(person => {
+                const option = document.createElement('option');
+                option.value = person;
+                option.textContent = person;
+                select.appendChild(option);
+            });
+
+            document.getElementById('personnelCount').textContent = 
+                `✓ ${personnel.length} personel yüklendi`;
+            
+            showAlert(`${personnel.length} personel başarıyla yüklendi!`, 'success');
+        }
+
+        // Add manual duty assignment
+        function addManualDuty() {
+            const person = document.getElementById('manualPerson').value;
+            const date = document.getElementById('manualDate').value;
+
+            if (!person || !date) {
+                showAlert('Lütfen personel ve tarih seçin!', 'error');
+                return;
+            }
+
+            // Check if date already has manual duty
+            const exists = manualDuties.find(d => d.date === date);
+            if (exists) {
+                showAlert('Bu tarih için zaten manuel atama var!', 'error');
+                return;
+            }
+
+            manualDuties.push({ person, date });
+            updateManualDutyList();
+            
+            // Reset inputs
+            document.getElementById('manualPerson').value = '';
+            document.getElementById('manualDate').value = '';
+        }
+
+        // Update manual duty list display
+        function updateManualDutyList() {
+            const list = document.getElementById('manualDutyList');
+            
+            if (manualDuties.length === 0) {
+                list.classList.add('hidden');
+                return;
+            }
+
+            list.classList.remove('hidden');
+            list.innerHTML = '<strong>Manuel Atamalar:</strong>';
+            
+            manualDuties.sort((a, b) => new Date(a.date) - new Date(b.date));
+            
+            manualDuties.forEach((duty, index) => {
+                const dateObj = new Date(duty.date + 'T00:00:00');
+                const dayName = dayNames[dateObj.getDay()];
+                const formattedDate = dateObj.toLocaleDateString('tr-TR');
+                
+                const item = document.createElement('div');
+                item.className = 'manual-duty-item';
+                item.innerHTML = `
+                    <span>${formattedDate} (${dayName}) - <strong>${duty.person}</strong></span>
+                    <button class="remove-btn" onclick="removeManualDuty(${index})">Kaldır</button>
+                `;
+                list.appendChild(item);
+            });
+        }
+
+        // Remove manual duty
+        function removeManualDuty(index) {
+            manualDuties.splice(index, 1);
+            updateManualDutyList();
+        }
+
+        // Generate duty schedule
+        function generateDutySchedule() {
+            if (personnel.length === 0) {
+                showAlert('Önce personel listesini yükleyin!', 'error');
+                return;
+            }
+
+            const monthStr = document.getElementById('monthSelect').value;
+            if (!monthStr) {
+                showAlert('Lütfen bir ay seçin!', 'error');
+                return;
+            }
+
+            const maxDuties = parseInt(document.getElementById('maxDuties').value);
+            if (maxDuties < 1) {
+                showAlert('Maksimum nöbet sayısı en az 1 olmalıdır!', 'error');
+                return;
+            }
+
+            selectedMonth = monthStr;
+            const [year, month] = monthStr.split('-').map(Number);
+            const daysInMonth = new Date(year, month, 0).getDate();
+
+            // Initialize duty schedule
+            dutySchedule = [];
+            const dutyCounts = {};
+            personnel.forEach(p => dutyCounts[p] = 0);
+
+            // Add manual duties first
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dateStr = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                const manual = manualDuties.find(d => d.date === dateStr);
+                
+                if (manual) {
+                    dutySchedule.push({
+                        date: dateStr,
+                        person: manual.person,
+                        isManual: true
+                    });
+                    dutyCounts[manual.person]++;
+                } else {
+                    dutySchedule.push({
+                        date: dateStr,
+                        person: null,
+                        isManual: false
+                    });
+                }
+            }
+
+            // Assign remaining duties
+            for (let i = 0; i < dutySchedule.length; i++) {
+                if (dutySchedule[i].person !== null) continue;
+
+                // Get available personnel
+                const available = personnel.filter(person => {
+                    // Check max duties
+                    if (dutyCounts[person] >= maxDuties) return false;
+
+                    // Check consecutive days
+                    if (i > 0 && dutySchedule[i - 1].person === person) return false;
+                    if (i < dutySchedule.length - 1 && dutySchedule[i + 1].person === person) return false;
+
+                    return true;
+                });
+
+                if (available.length === 0) {
+                    showAlert('Nöbet çizelgesi oluşturulamadı! Kurallar çok kısıtlayıcı olabilir.', 'error');
+                    return;
+                }
+
+                // Select person with least duties
+                available.sort((a, b) => dutyCounts[a] - dutyCounts[b]);
+                const selectedPerson = available[0];
+
+                dutySchedule[i].person = selectedPerson;
+                dutyCounts[selectedPerson]++;
+            }
+
+            displayDutySchedule();
+            updateSwapSelectors();
+            showStatistics(dutyCounts);
+            
+            document.getElementById('swapSection').classList.remove('hidden');
+            document.getElementById('exportSection').classList.remove('hidden');
+            
+            showAlert('Nöbet çizelgesi başarıyla oluşturuldu!', 'success');
+        }
+
+        // Display duty schedule in table
+        function displayDutySchedule() {
+            const container = document.getElementById('scheduleTable');
+            
+            let html = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Tarih</th>
+                            <th>Gün</th>
+                            <th>Görevli</th>
+                            <th>Durum</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            dutySchedule.forEach(duty => {
+                const dateObj = new Date(duty.date + 'T00:00:00');
+                const dayName = dayNames[dateObj.getDay()];
+                const formattedDate = dateObj.toLocaleDateString('tr-TR');
+                const status = duty.isManual ? '🔒 Manuel' : '🔄 Otomatik';
+
+                html += `
+                    <tr>
+                        <td>${formattedDate}</td>
+                        <td>${dayName}</td>
+                        <td><strong>${duty.person}</strong></td>
+                        <td>${status}</td>
+                    </tr>
+                `;
+            });
+
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        }
+
+        // Show statistics
+        function showStatistics(dutyCounts) {
+            const container = document.getElementById('statistics');
+            container.classList.remove('hidden');
+
+            const totalDuties = dutySchedule.length;
+            const assigned = dutySchedule.filter(d => d.person !== null).length;
+            const manualCount = dutySchedule.filter(d => d.isManual).length;
+
+            let html = `
+                <div class="stat-card">
+                    <div class="stat-value">${totalDuties}</div>
+                    <div class="stat-label">Toplam Gün</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${assigned}</div>
+                    <div class="stat-label">Atanan Nöbet</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${manualCount}</div>
+                    <div class="stat-label">Manuel Atama</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${personnel.length}</div>
+                    <div class="stat-label">Toplam Personel</div>
+                </div>
+            `;
+
+            container.innerHTML = html;
+        }
+
+        // Update swap date selectors
+        function updateSwapSelectors() {
+            const select1 = document.getElementById('swapDate1');
+            const select2 = document.getElementById('swapDate2');
+
+            select1.innerHTML = '<option value="">Tarih seçin...</option>';
+            select2.innerHTML = '<option value="">Tarih seçin...</option>';
+
+            dutySchedule.forEach((duty, index) => {
+                const dateObj = new Date(duty.date + 'T00:00:00');
+                const dayName = dayNames[dateObj.getDay()];
+                const formattedDate = dateObj.toLocaleDateString('tr-TR');
+                const displayText = `${formattedDate} (${dayName}) - ${duty.person}`;
+
+                const option1 = document.createElement('option');
+                option1.value = index;
+                option1.textContent = displayText;
+                select1.appendChild(option1);
+
+                const option2 = document.createElement('option');
+                option2.value = index;
+                option2.textContent = displayText;
+                select2.appendChild(option2);
+            });
+
+            select1.addEventListener('change', () => updateSwapPreview('swapPerson1', select1.value));
+            select2.addEventListener('change', () => updateSwapPreview('swapPerson2', select2.value));
+        }
+
+        // Update swap preview
+        function updateSwapPreview(elementId, index) {
+            const element = document.getElementById(elementId);
+            if (index === '') {
+                element.textContent = '';
+            } else {
+                element.textContent = `Görevli: ${dutySchedule[index].person}`;
+            }
+        }
+
+        // Swap duties
+        function swapDuties() {
+            const index1 = document.getElementById('swapDate1').value;
+            const index2 = document.getElementById('swapDate2').value;
+
+            if (!index1 || !index2) {
+                showAlert('Lütfen iki tarih seçin!', 'error');
+                return;
+            }
+
+            if (index1 === index2) {
+                showAlert('Aynı tarihi seçemezsiniz!', 'error');
+                return;
+            }
+
+            const i1 = parseInt(index1);
+            const i2 = parseInt(index2);
+
+            // Swap persons
+            const temp = dutySchedule[i1].person;
+            dutySchedule[i1].person = dutySchedule[i2].person;
+            dutySchedule[i2].person = temp;
+
+            // Update manual status if needed
+            dutySchedule[i1].isManual = false;
+            dutySchedule[i2].isManual = false;
+
+            displayDutySchedule();
+            updateSwapSelectors();
+            
+            // Reset selections
+            document.getElementById('swapDate1').value = '';
+            document.getElementById('swapDate2').value = '';
+            document.getElementById('swapPerson1').textContent = '';
+            document.getElementById('swapPerson2').textContent = '';
+
+            showAlert('Nöbetler başarıyla değiştirildi!', 'success');
+        }
+
+        // Export to CSV
+        function exportToCSV() {
+            if (dutySchedule.length === 0) {
+                showAlert('Önce nöbet çizelgesi oluşturun!', 'error');
+                return;
+            }
+
+            let csv = 'Tarih,Gün,Görevli\n';
+
+            dutySchedule.forEach(duty => {
+                const dateObj = new Date(duty.date + 'T00:00:00');
+                const dayName = dayNames[dateObj.getDay()];
+                const formattedDate = dateObj.toLocaleDateString('tr-TR');
+
+                csv += `${formattedDate},${dayName},${duty.person}\n`;
+            });
+
+            // Create download
+            const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            
+            const [year, month] = selectedMonth.split('-');
+            const fileName = `Nobet_Cizelgesi_${year}_${month}.csv`;
+            
+            link.setAttribute('href', url);
+            link.setAttribute('download', fileName);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            showAlert('CSV dosyası indirildi!', 'success');
+        }
+
+        // Show alert message
+        function showAlert(message, type) {
+            const alertDiv = document.getElementById('alert');
+            alertDiv.className = `alert alert-${type}`;
+            alertDiv.textContent = message;
+            alertDiv.style.display = 'block';
+
+            setTimeout(() => {
+                alertDiv.style.display = 'none';
+            }, 5000);
+        }
+    </script>
+</body>
+  </html>
