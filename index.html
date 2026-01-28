@@ -635,6 +635,11 @@
             <div class="section">
                 <h2>Çizelge Parametreleri</h2>
                 
+                <div class="hint">
+                    📅 <strong>Önemli:</strong> Seçtiğiniz ayın <strong>1. gününden son gününe kadar</strong> otomatik olarak çizelge oluşturulur.<br>
+                    Örnek: Şubat 2026 seçerseniz → 1 Şubat'tan 28 Şubat'a kadar tüm günler dahil edilir.
+                </div>
+                
                 <label for="schedule-month">Ay ve Yıl Seçin:</label>
                 <input type="month" id="schedule-month" required>
 
@@ -2340,7 +2345,11 @@
         }
 
         function formatDateISO(date) {
-            return date.toISOString().split('T')[0];
+            // Local timezone kullanarak tarih formatla (UTC timezone sorununu önler)
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
         }
 
         function getDayName(dayOfWeek) {
