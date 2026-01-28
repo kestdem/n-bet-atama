@@ -699,7 +699,7 @@
 <body>
     <div class="container">
         <header>
-            <h1>Nöbet Çizelgesi Yönetim Sistemi</h1>
+            <h1>🎖️ Nöbet Çizelgesi Yönetim Sistemi</h1>
         </header>
 
         <div class="tabs">
@@ -716,7 +716,7 @@
                 <h2>Personel Ekleme</h2>
                 
                 <div class="hint">
-                     TXT dosyasında her satır: <strong>İsim,NöbetSayısı,İstisnaGünler</strong> formatında olmalıdır.<br>
+                    💡 TXT dosyasında her satır: <strong>İsim,NöbetSayısı,İstisnaGünler</strong> formatında olmalıdır.<br>
                     <strong>Format:</strong> <code>"İsim","Aylık Nöbet Sayısı","(İstisna Günler - sadece gün numarası)"</code><br>
                     <strong>Örnekler:</strong><br>
                     <code>Ahmet Yılmaz,3,(5,15,20)</code> - Ayın 5, 15 ve 20'sinde nöbet tutamaz<br>
@@ -751,7 +751,7 @@
                 <h2>⚙️ Nöbet Kuralları Yapılandırması</h2>
                 
                 <div class="hint">
-                     Bu kurallar çizelge oluşturulurken otomatik olarak uygulanır. İhtiyacınıza göre özelleştirebilirsiniz.
+                    ℹ️ Bu kurallar çizelge oluşturulurken otomatik olarak uygulanır. İhtiyacınıza göre özelleştirebilirsiniz.
                 </div>
 
                 <div style="background: white; padding: 20px; border-radius: 6px; margin-bottom: 20px;">
@@ -763,7 +763,7 @@
                         <label for="max-duties-per-week">Kişi başı maksimum nöbet sayısı (haftalık):</label>
                         <input type="number" id="max-duties-per-week" min="1" max="7" value="1">
                         <p style="font-size: 0.9rem; color: #666; margin-top: 5px;">
-                             Her kişi bir haftada en fazla bu kadar nöbet tutabilir.
+                            📌 Her kişi bir haftada en fazla bu kadar nöbet tutabilir.
                         </p>
                     </div>
                 </div>
@@ -777,7 +777,7 @@
                         <label for="min-days-gap">Aynı kişinin nöbetleri arasında minimum gün sayısı:</label>
                         <input type="number" id="min-days-gap" min="0" max="14" value="3">
                         <p style="font-size: 0.9rem; color: #666; margin-top: 5px;">
-                             Bir kişinin iki nöbeti arasında en az bu kadar gün olmalıdır.
+                            📌 Bir kişinin iki nöbeti arasında en az bu kadar gün olmalıdır.
                         </p>
                     </div>
                 </div>
@@ -789,7 +789,7 @@
                     </h3>
                     <div id="rule-no-consecutive-config" class="rule-config">
                         <p style="font-size: 0.9rem; color: #666;">
-                             Aynı kişi arka arkaya iki gün nöbet tutamaz (örn. Pazartesi ve Salı).
+                            📌 Aynı kişi arka arkaya iki gün nöbet tutamaz (örn. Pazartesi ve Salı).
                         </p>
                     </div>
                 </div>
@@ -807,7 +807,7 @@
                             <option value="none">Yok: Hafta sonu/içi dengesi kontrol edilmez</option>
                         </select>
                         <p style="font-size: 0.9rem; color: #666; margin-top: 5px;">
-                             Kişi başına hafta sonu ve hafta içi nöbet dağılımı dengelenir.
+                            📌 Kişi başına hafta sonu ve hafta içi nöbet dağılımı dengelenir.
                         </p>
                     </div>
                 </div>
@@ -825,7 +825,7 @@
                             <option value="random">Rastgele: Uygun kişilerden rastgele seçilir</option>
                         </select>
                         <p style="font-size: 0.9rem; color: #666; margin-top: 5px;">
-                             Nöbetler nasıl dağıtılsın?
+                            📌 Nöbetler nasıl dağıtılsın?
                         </p>
                     </div>
                 </div>
@@ -897,7 +897,7 @@
                 <h2>Nöbet Değişimi</h2>
                 
                 <div class="hint">
-                     İki nöbet gününü seçerek personel değişimi yapabilirsiniz.
+                    ℹ️ İki nöbet gününü seçerek personel değişimi yapabilirsiniz.
                 </div>
 
                 <div class="swap-controls">
@@ -2428,6 +2428,28 @@
                 }
             });
 
+            // Calculate optimal font sizes based on number of days
+            const dayCount = schedule.length;
+            const personnelCount = personnel.length;
+            
+            // Dynamic sizing for better fit
+            let tableFontSize = '8pt';
+            let headerFontSize = '7pt';
+            let cellPadding = '4px 2px';
+            let personnelWidth = '80px';
+            
+            if (dayCount > 31) {
+                tableFontSize = '6pt';
+                headerFontSize = '5.5pt';
+                cellPadding = '3px 1px';
+                personnelWidth = '70px';
+            } else if (dayCount > 28) {
+                tableFontSize = '7pt';
+                headerFontSize = '6.5pt';
+                cellPadding = '3px 2px';
+                personnelWidth = '75px';
+            }
+
             let html = `
 <!DOCTYPE html>
 <html>
@@ -2437,91 +2459,145 @@
     <style>
         @page {
             size: A4 landscape;
-            margin: 15mm;
+            margin: 10mm 8mm;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
         body {
             font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 5px;
         }
         h1 {
             text-align: center;
             color: #4a5d3e;
-            font-size: 18pt;
-            margin-bottom: 10px;
+            font-size: 16pt;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        .table-container {
+            width: 100%;
+            max-width: 100%;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
         }
         table {
             border-collapse: collapse;
-            width: 100%;
-            font-size: 9pt;
+            width: auto;
+            max-width: 100%;
+            font-size: ${tableFontSize};
+            margin: 0 auto;
         }
         th, td {
-            border: 1px solid #000000;
-            padding: 6px 4px;
+            border: 1px solid #333;
+            padding: ${cellPadding};
             text-align: center;
             vertical-align: middle;
+            line-height: 1.2;
         }
         th {
             background-color: #4a5d3e;
             color: white;
             font-weight: bold;
-            font-size: 8pt;
+            font-size: ${headerFontSize};
+            white-space: nowrap;
         }
         th.weekend {
-            background-color: #d4c5a9;
+            background-color: #8b9679;
             color: #000000;
+        }
+        th:first-child {
+            width: ${personnelWidth};
+            min-width: ${personnelWidth};
         }
         td.personnel {
             background-color: #f4f0e6;
             font-weight: bold;
             text-align: left;
             white-space: nowrap;
-            font-size: 9pt;
+            font-size: ${tableFontSize};
+            padding-left: 4px;
         }
         td.weekday-duty {
             background-color: #d4edda;
             font-weight: bold;
-            font-size: 14pt;
+            font-size: 11pt;
         }
         td.weekend-duty {
             background-color: #fff3cd;
             font-weight: bold;
-            font-size: 14pt;
+            font-size: 11pt;
         }
         td.locked-duty {
             background-color: #d1ecf1;
             font-weight: bold;
-            font-size: 14pt;
+            font-size: 11pt;
         }
         td.no-duty {
             background-color: #ffffff;
+            color: #ddd;
         }
         .footer {
-            margin-top: 10px;
-            font-size: 8pt;
+            margin-top: 8px;
+            font-size: 7pt;
             text-align: center;
             color: #666;
+            width: 100%;
+        }
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 8px;
+            font-size: 7pt;
+            flex-wrap: wrap;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .legend-box {
+            width: 12px;
+            height: 12px;
+            border: 1px solid #333;
         }
         @media print {
-            .no-print { display: none; }
+            .no-print { 
+                display: none !important; 
+            }
+            body {
+                padding: 0;
+            }
+            @page {
+                margin: 10mm 8mm;
+            }
         }
     </style>
 </head>
 <body>
-    <h1> Nöbet Çizelgesi</h1>
-    <button class="no-print" onclick="window.print()" style="margin-bottom: 10px; padding: 8px 16px; background: #4a5d3e; color: white; border: none; cursor: pointer; border-radius: 4px;">PDF Olarak Kaydet</button>
+    <h1>Nöbet Çizelgesi</h1>
+    <button class="no-print" onclick="window.print()" style="margin-bottom: 10px; padding: 8px 16px; background: #4a5d3e; color: white; border: none; cursor: pointer; border-radius: 4px; font-size: 11pt;">PDF Olarak Kaydet</button>
     
-    <table>
-        <thead>
-            <tr>
-                <th>PERSONEL</th>`;
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>PERSONEL</th>`;
 
             // Header with dates
             schedule.forEach(day => {
                 const date = new Date(day.date);
                 const dayNum = date.getDate();
                 const isWeekend = day.isWeekend;
-                const dayAbbr = day.dayName.substring(0, 3).toUpperCase();
+                const dayAbbr = day.dayName.substring(0, 2).toUpperCase();
                 
                 html += `<th class="${isWeekend ? 'weekend' : ''}">${dayAbbr}<br>${dayNum}</th>`;
             });
@@ -2541,7 +2617,7 @@
                                         (hasDuty.isWeekend ? 'weekend-duty' : 'weekday-duty');
                         html += `<td class="${className}">${icon}</td>`;
                     } else {
-                        html += `<td class="no-duty"></td>`;
+                        html += `<td class="no-duty">-</td>`;
                     }
                 });
                 
@@ -2549,6 +2625,23 @@
             });
 
             html += `</tbody></table>
+    </div>
+    
+    <div class="legend">
+        <div class="legend-item">
+            <span class="legend-box" style="background: #d4edda;"></span>
+            <span>Hafta İçi</span>
+        </div>
+        <div class="legend-item">
+            <span class="legend-box" style="background: #fff3cd;"></span>
+            <span>Hafta Sonu</span>
+        </div>
+        <div class="legend-item">
+            <span class="legend-box" style="background: #d1ecf1;"></span>
+            <span>Sabit Nöbet</span>
+        </div>
+    </div>
+    
     <div class="footer">Oluşturulma Tarihi: ${new Date().toLocaleString('tr-TR')}</div>
 </body>
 </html>`;
