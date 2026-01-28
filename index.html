@@ -212,17 +212,19 @@
         th {
             background: var(--army-green);
             color: var(--cream);
-            padding: 12px;
-            text-align: left;
+            padding: 8px 4px;
+            text-align: center;
             font-weight: 600;
             text-transform: uppercase;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             border: 1px solid var(--dark-green);
+            white-space: nowrap;
         }
 
         td {
-            padding: 10px 12px;
+            padding: 10px 8px;
             border: 1px solid var(--border-color);
+            text-align: center;
         }
 
         tr:nth-child(even) {
@@ -231,6 +233,17 @@
 
         tr:hover {
             background: var(--cream);
+        }
+        
+        /* Sticky column for personnel names */
+        td:first-child, th:first-child {
+            position: sticky;
+            left: 0;
+            z-index: 2;
+        }
+        
+        thead th:first-child {
+            z-index: 11;
         }
 
         .personnel-list {
@@ -488,8 +501,12 @@
                 <h2>Personel Ekleme</h2>
                 
                 <div class="hint">
-                    💡 TXT dosyasında her satır: <strong>İsim,NöbetSayısı</strong> formatında olmalıdır.<br>
-                    Örnek: <code>Ahmet Yılmaz,3</code> veya <code>Mehmet Demir,5</code>
+                    💡 TXT dosyasında her satır: <strong>İsim,NöbetSayısı,İstisnaGünler</strong> formatında olmalıdır.<br>
+                    <strong>Format:</strong> <code>"İsim","Aylık Nöbet Sayısı","(İstisna Günler - sadece gün numarası)"</code><br>
+                    <strong>Örnekler:</strong><br>
+                    <code>Ahmet Yılmaz,3,(5,15,20)</code> - Ayın 5, 15 ve 20'sinde nöbet tutamaz<br>
+                    <code>Mehmet Demir,5,()</code> - İstisna yok<br>
+                    <code>Ayşe Kaya,4,(10)</code> - Sadece ayın 10'unda nöbet tutamaz
                 </div>
 
                 <label for="txt-file">TXT Dosyasından İçe Aktar:</label>
@@ -500,8 +517,8 @@
                     - VEYA -
                 </div>
 
-                <label for="manual-input">Manuel Giriş (Her satıra: İsim,NöbetSayısı):</label>
-                <textarea id="manual-input" placeholder="Ahmet Yılmaz,3&#10;Mehmet Demir,5&#10;Ayşe Kaya,4"></textarea>
+                <label for="manual-input">Manuel Giriş (Her satıra: İsim,NöbetSayısı,İstisnaGünler):</label>
+                <textarea id="manual-input" placeholder="Ahmet Yılmaz,3,(5,15,20)&#10;Mehmet Demir,5,()&#10;Ayşe Kaya,4,(10)"></textarea>
                 <button onclick="addPersonnelManually()">Manuel Ekle</button>
             </div>
 
@@ -642,7 +659,9 @@
                 <h2>Aylık Nöbet Çizelgesi</h2>
                 
                 <div class="btn-group">
-                    <button onclick="exportToCSV()">📄 CSV Olarak Dışa Aktar</button>
+                    <button onclick="exportToExcel()">📊 Excel Olarak Dışa Aktar</button>
+                    <button onclick="exportToPDF()">📄 PDF Olarak Dışa Aktar</button>
+                    <button class="secondary" onclick="exportToCSV()">💾 HTML/CSV Dışa Aktar</button>
                     <button class="secondary" onclick="printSchedule()">🖨️ Yazdır</button>
                 </div>
 
@@ -802,15 +821,23 @@
                 let errors = [];
                 
                 lines.forEach((line, index) => {
-                    const parts = line.split(',').map(p => p.trim());
+                    // Parse format: Name,DutyCount,(ExceptionDays)
+                    // Example: Ahmet Yılmaz,3,(5,15,20)
                     
-                    if (parts.length !== 2) {
-                        errors.push(`Satır ${index + 1}: Geçersiz format. Format: İsim,NöbetSayısı`);
+                    // Remove quotes if present
+                    line = line.replace(/"/g, '');
+                    
+                    // Split by comma, but preserve days inside parentheses
+                    const match = line.match(/^([^,]+),(\d+),\(([^)]*)\)$/);
+                    
+                    if (!match) {
+                        errors.push(`Satır ${index + 1}: Geçersiz format. Beklenen: İsim,NöbetSayısı,(Günler)`);
                         return;
                     }
                     
-                    const name = parts[0];
-                    const dutyCount = parseInt(parts[1]);
+                    const name = match[1].trim();
+                    const dutyCount = parseInt(match[2].trim());
+                    const exceptionDaysStr = match[3].trim();
                     
                     if (!name || name.length === 0) {
                         errors.push(`Satır ${index + 1}: İsim boş olamaz`);
@@ -818,22 +845,43 @@
                     }
                     
                     if (isNaN(dutyCount) || dutyCount < 0) {
-                        errors.push(`Satır ${index + 1}: Geçersiz nöbet sayısı (${parts[1]})`);
+                        errors.push(`Satır ${index + 1}: Geçersiz nöbet sayısı (${match[2]})`);
                         return;
                     }
                     
-                    if (!personnel.find(p => p.name === name)) {
+                    // Parse exception days (just day numbers)
+                    let exceptionDays = [];
+                    if (exceptionDaysStr.length > 0) {
+                        exceptionDays = exceptionDaysStr.split(',')
+                            .map(d => d.trim())
+                            .filter(d => d.length > 0);
+                        
+                        // Validate day numbers
+                        for (const day of exceptionDays) {
+                            const dayNum = parseInt(day);
+                            if (isNaN(dayNum) || dayNum < 1 || dayNum > 31) {
+                                errors.push(`Satır ${index + 1}: Geçersiz gün numarası: ${day}. 1-31 arası olmalı.`);
+                                return;
+                            }
+                        }
+                    }
+                    
+                    // Add or update person
+                    const existingPerson = personnel.find(p => p.name === name);
+                    if (!existingPerson) {
                         personnel.push({
                             name: name,
                             maxDutiesPerMonth: dutyCount,
-                            exceptionDates: [],
+                            exceptionDates: [], // Will be converted to full dates when schedule is generated
+                            exceptionDays: exceptionDays.map(d => parseInt(d)), // Store day numbers
                             fixedDates: []
                         });
                         addedCount++;
                     } else {
-                        // Update existing person's duty count
-                        const existing = personnel.find(p => p.name === name);
-                        existing.maxDutiesPerMonth = dutyCount;
+                        // Update existing person
+                        existingPerson.maxDutiesPerMonth = dutyCount;
+                        existingPerson.exceptionDays = exceptionDays.map(d => parseInt(d));
+                        existingPerson.exceptionDates = []; // Reset full dates
                         addedCount++;
                     }
                 });
@@ -868,15 +916,20 @@
             let errors = [];
             
             lines.forEach((line, index) => {
-                const parts = line.split(',').map(p => p.trim());
+                // Remove quotes if present
+                line = line.replace(/"/g, '');
                 
-                if (parts.length !== 2) {
-                    errors.push(`Satır ${index + 1}: Geçersiz format. Format: İsim,NöbetSayısı`);
+                // Parse format: Name,DutyCount,(ExceptionDays)
+                const match = line.match(/^([^,]+),(\d+),\(([^)]*)\)$/);
+                
+                if (!match) {
+                    errors.push(`Satır ${index + 1}: Geçersiz format. Beklenen: İsim,NöbetSayısı,(Günler)`);
                     return;
                 }
                 
-                const name = parts[0];
-                const dutyCount = parseInt(parts[1]);
+                const name = match[1].trim();
+                const dutyCount = parseInt(match[2].trim());
+                const exceptionDaysStr = match[3].trim();
                 
                 if (!name || name.length === 0) {
                     errors.push(`Satır ${index + 1}: İsim boş olamaz`);
@@ -884,22 +937,43 @@
                 }
                 
                 if (isNaN(dutyCount) || dutyCount < 0) {
-                    errors.push(`Satır ${index + 1}: Geçersiz nöbet sayısı (${parts[1]})`);
+                    errors.push(`Satır ${index + 1}: Geçersiz nöbet sayısı (${match[2]})`);
                     return;
                 }
                 
-                if (!personnel.find(p => p.name === name)) {
+                // Parse exception days (just day numbers)
+                let exceptionDays = [];
+                if (exceptionDaysStr.length > 0) {
+                    exceptionDays = exceptionDaysStr.split(',')
+                        .map(d => d.trim())
+                        .filter(d => d.length > 0);
+                    
+                    // Validate day numbers
+                    for (const day of exceptionDays) {
+                        const dayNum = parseInt(day);
+                        if (isNaN(dayNum) || dayNum < 1 || dayNum > 31) {
+                            errors.push(`Satır ${index + 1}: Geçersiz gün numarası: ${day}. 1-31 arası olmalı.`);
+                            return;
+                        }
+                    }
+                }
+                
+                // Add or update person
+                const existingPerson = personnel.find(p => p.name === name);
+                if (!existingPerson) {
                     personnel.push({
                         name: name,
                         maxDutiesPerMonth: dutyCount,
                         exceptionDates: [],
+                        exceptionDays: exceptionDays.map(d => parseInt(d)),
                         fixedDates: []
                     });
                     addedCount++;
                 } else {
-                    // Update existing person's duty count
-                    const existing = personnel.find(p => p.name === name);
-                    existing.maxDutiesPerMonth = dutyCount;
+                    // Update existing person
+                    existingPerson.maxDutiesPerMonth = dutyCount;
+                    existingPerson.exceptionDays = exceptionDays.map(d => parseInt(d));
+                    existingPerson.exceptionDates = [];
                     addedCount++;
                 }
             });
@@ -924,14 +998,19 @@
                 return;
             }
 
-            container.innerHTML = personnel.map((person, index) => `
+            container.innerHTML = personnel.map((person, index) => {
+                const exceptionDaysText = person.exceptionDays && person.exceptionDays.length > 0 
+                    ? person.exceptionDays.join(', ') 
+                    : (person.exceptionDates && person.exceptionDates.length > 0 ? person.exceptionDates.length : '0');
+                    
+                return `
                 <div class="personnel-item">
                     <div class="personnel-info">
                         <div class="personnel-name">${person.name}</div>
                         <div class="personnel-constraints">
                             Max Nöbet: ${person.maxDutiesPerMonth}/ay | 
-                            İstisna Tarih: ${person.exceptionDates.length} | 
-                            Sabit Nöbet: ${person.fixedDates.length}
+                            İstisna Günler: ${exceptionDaysText} | 
+                            Sabit Nöbet: ${person.fixedDates ? person.fixedDates.length : 0}
                         </div>
                     </div>
                     <div>
@@ -939,7 +1018,7 @@
                         <button class="danger" onclick="deletePersonnel(${index})" style="margin-left: 5px;">🗑️ Sil</button>
                     </div>
                 </div>
-            `).join('');
+            `}).join('');
         }
 
         // Edit personnel
@@ -1366,6 +1445,28 @@
             const daysInMonth = new Date(year, month, 0).getDate();
             const newSchedule = [];
 
+            // Convert exception days to full dates for the selected month
+            personnel.forEach(person => {
+                // Initialize arrays if not present
+                if (!person.exceptionDays) person.exceptionDays = [];
+                if (!person.exceptionDates) person.exceptionDates = [];
+                if (!person.fixedDates) person.fixedDates = [];
+                
+                // Convert exception days to full dates
+                const fullExceptionDates = [];
+                if (person.exceptionDays && person.exceptionDays.length > 0) {
+                    person.exceptionDays.forEach(day => {
+                        if (day >= 1 && day <= daysInMonth) {
+                            const dateStr = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                            fullExceptionDates.push(dateStr);
+                        }
+                    });
+                }
+                
+                // Merge with existing exception dates (from manual entry in edit modal)
+                person.exceptionDates = [...new Set([...fullExceptionDates, ...(person.exceptionDates || [])])];
+            });
+
             // Initialize schedule with fixed dates
             for (let day = 1; day <= daysInMonth; day++) {
                 const date = new Date(year, month - 1, day);
@@ -1375,7 +1476,7 @@
                 
                 // Check for fixed dates
                 for (const person of personnel) {
-                    if (person.fixedDates.includes(dateStr)) {
+                    if (person.fixedDates && person.fixedDates.includes(dateStr)) {
                         assignedPerson = person.name;
                         break;
                     }
@@ -1402,8 +1503,8 @@
                 totalDuties: 0,
                 lastDutyDate: null,
                 maxDuties: person.maxDutiesPerMonth,
-                exceptionDates: person.exceptionDates,
-                fixedDates: person.fixedDates
+                exceptionDates: person.exceptionDates || [],
+                fixedDates: person.fixedDates || []
             }));
 
             // Count fixed duties
@@ -1551,30 +1652,79 @@
                 return;
             }
 
-            const tableHTML = `
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Tarih</th>
-                            <th>Gün</th>
-                            <th>Görevli Personel</th>
-                            <th>Durum</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${schedule.map(day => `
-                            <tr class="${day.isWeekend ? 'weekend' : ''}">
-                                <td>${formatDate(day.date)}</td>
-                                <td>${day.dayName}</td>
-                                <td><strong>${day.assignedTo}</strong></td>
-                                <td>
-                                    ${day.isWeekend ? '📅 Hafta Sonu' : '📋 Hafta İçi'}
-                                    ${day.isLocked ? ' 🔒 Sabit' : ''}
-                                </td>
-                            </tr>
-                        `).join('')}
-                    </tbody>
-                </table>
+            // Create matrix view: rows = personnel, columns = dates
+            const matrix = {};
+            
+            // Initialize matrix for each person
+            personnel.forEach(person => {
+                matrix[person.name] = {};
+            });
+            
+            // Fill matrix with duties
+            schedule.forEach(day => {
+                if (day.assignedTo && matrix[day.assignedTo]) {
+                    matrix[day.assignedTo][day.date] = {
+                        isWeekend: day.isWeekend,
+                        isLocked: day.isLocked
+                    };
+                }
+            });
+
+            // Build table HTML
+            let tableHTML = '<div style="overflow-x: auto;"><table style="min-width: 100%;">';
+            
+            // Header row with dates
+            tableHTML += '<thead><tr>';
+            tableHTML += '<th style="position: sticky; left: 0; z-index: 10; background: var(--army-green);">Personel</th>';
+            
+            schedule.forEach(day => {
+                const date = new Date(day.date);
+                const dayNum = date.getDate();
+                const isWeekend = day.isWeekend;
+                
+                tableHTML += `<th style="text-align: center; min-width: 45px; ${isWeekend ? 'background: #5d6e4e;' : ''}" title="${formatDate(day.date)} - ${day.dayName}">
+                    <div style="font-size: 0.75rem;">${day.dayName.substring(0, 3)}</div>
+                    <div style="font-size: 1.1rem; font-weight: bold;">${dayNum}</div>
+                </th>`;
+            });
+            
+            tableHTML += '</tr></thead><tbody>';
+            
+            // Data rows - one per person
+            personnel.forEach(person => {
+                tableHTML += '<tr>';
+                tableHTML += `<td style="position: sticky; left: 0; z-index: 5; background: var(--light-bg); font-weight: bold; white-space: nowrap;">
+                    ${person.name}
+                </td>`;
+                
+                schedule.forEach(day => {
+                    const hasDuty = matrix[person.name][day.date];
+                    const isWeekend = day.isWeekend;
+                    
+                    if (hasDuty) {
+                        const icon = hasDuty.isLocked ? '🔒' : '✓';
+                        const bgColor = hasDuty.isLocked ? '#d1ecf1' : (isWeekend ? '#fff3cd' : '#d4edda');
+                        tableHTML += `<td style="text-align: center; background: ${bgColor}; font-size: 1.3rem; font-weight: bold;">
+                            ${icon}
+                        </td>`;
+                    } else {
+                        const bgColor = isWeekend ? '#f8f8f8' : 'white';
+                        tableHTML += `<td style="text-align: center; background: ${bgColor}; color: #ddd;">-</td>`;
+                    }
+                });
+                
+                tableHTML += '</tr>';
+            });
+            
+            tableHTML += '</tbody></table></div>';
+            
+            // Add legend
+            tableHTML += `
+                <div style="margin-top: 20px; padding: 15px; background: var(--light-bg); border-radius: 6px; display: flex; gap: 20px; flex-wrap: wrap;">
+                    <div><span style="display: inline-block; width: 20px; height: 20px; background: #d4edda; border: 1px solid #999; vertical-align: middle;"></span> Hafta İçi Nöbet</div>
+                    <div><span style="display: inline-block; width: 20px; height: 20px; background: #fff3cd; border: 1px solid #999; vertical-align: middle;"></span> Hafta Sonu Nöbet</div>
+                    <div><span style="display: inline-block; width: 20px; height: 20px; background: #d1ecf1; border: 1px solid #999; vertical-align: middle;"></span> Sabit Nöbet (🔒)</div>
+                </div>
             `;
 
             container.innerHTML = tableHTML;
@@ -1649,29 +1799,76 @@
                 return;
             }
 
-            const previewHTML = `
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Tarih</th>
-                            <th>Gün</th>
-                            <th>Görevli</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${schedule.slice(0, 10).map(day => `
-                            <tr class="${day.isWeekend ? 'weekend' : ''} ${day.isLocked ? 'locked' : ''}">
-                                <td>${formatDate(day.date)}</td>
-                                <td>${day.dayName}</td>
-                                <td>${day.assignedTo}</td>
-                            </tr>
-                        `).join('')}
-                        ${schedule.length > 10 ? '<tr><td colspan="3" style="text-align: center; color: #999;">...</td></tr>' : ''}
-                    </tbody>
-                </table>
-            `;
+            // Show first 10 days in matrix format
+            const previewSchedule = schedule.slice(0, 10);
+            
+            // Create matrix
+            const matrix = {};
+            personnel.forEach(person => {
+                matrix[person.name] = {};
+            });
+            
+            previewSchedule.forEach(day => {
+                if (day.assignedTo && matrix[day.assignedTo]) {
+                    matrix[day.assignedTo][day.date] = {
+                        isWeekend: day.isWeekend,
+                        isLocked: day.isLocked
+                    };
+                }
+            });
 
-            container.innerHTML = previewHTML;
+            let tableHTML = '<div style="overflow-x: auto;"><table style="font-size: 0.9rem;">';
+            
+            // Header
+            tableHTML += '<thead><tr>';
+            tableHTML += '<th style="position: sticky; left: 0; z-index: 10; background: var(--army-green);">Personel</th>';
+            
+            previewSchedule.forEach(day => {
+                const date = new Date(day.date);
+                const dayNum = date.getDate();
+                const isWeekend = day.isWeekend;
+                
+                tableHTML += `<th style="text-align: center; min-width: 40px; ${isWeekend ? 'background: #5d6e4e;' : ''}">
+                    <div style="font-size: 0.7rem;">${day.dayName.substring(0, 2)}</div>
+                    <div style="font-size: 0.95rem; font-weight: bold;">${dayNum}</div>
+                </th>`;
+            });
+            
+            tableHTML += '</tr></thead><tbody>';
+            
+            // Rows
+            personnel.forEach(person => {
+                tableHTML += '<tr>';
+                tableHTML += `<td style="position: sticky; left: 0; z-index: 5; background: var(--light-bg); font-weight: bold; text-align: left; font-size: 0.85rem;">
+                    ${person.name}
+                </td>`;
+                
+                previewSchedule.forEach(day => {
+                    const hasDuty = matrix[person.name][day.date];
+                    const isWeekend = day.isWeekend;
+                    
+                    if (hasDuty) {
+                        const icon = hasDuty.isLocked ? '🔒' : '✓';
+                        const bgColor = hasDuty.isLocked ? '#d1ecf1' : (isWeekend ? '#fff3cd' : '#d4edda');
+                        tableHTML += `<td style="text-align: center; background: ${bgColor}; font-size: 1.1rem;">
+                            ${icon}
+                        </td>`;
+                    } else {
+                        const bgColor = isWeekend ? '#f8f8f8' : 'white';
+                        tableHTML += `<td style="text-align: center; background: ${bgColor}; color: #ddd; font-size: 0.8rem;">-</td>`;
+                    }
+                });
+                
+                tableHTML += '</tr>';
+            });
+            
+            tableHTML += '</tbody></table></div>';
+            
+            if (schedule.length > 10) {
+                tableHTML += '<p style="text-align: center; color: #999; margin-top: 10px; font-size: 0.85rem;">İlk 10 gün gösteriliyor. Tam çizelge için "Nöbet Çizelgesi" sekmesine bakın.</p>';
+            }
+
+            container.innerHTML = tableHTML;
         }
 
         // Export to CSV
@@ -1681,6 +1878,135 @@
                 return;
             }
 
+            // Ask user which format they want
+            const format = confirm('Renklendirilmiş HTML formatında mı dışa aktarmak istersiniz?\n\nEvet = HTML Matris (Renkli, Excel\'de açılabilir)\nHayır = CSV Liste (Düz metin)');
+
+            if (format) {
+                // HTML Matrix format with colors
+                exportToHTMLMatrix();
+            } else {
+                // Plain CSV list format
+                exportToPlainCSV();
+            }
+        }
+
+        function exportToHTMLMatrix() {
+            // Create matrix
+            const matrix = {};
+            personnel.forEach(person => {
+                matrix[person.name] = {};
+            });
+            
+            schedule.forEach(day => {
+                if (day.assignedTo && matrix[day.assignedTo]) {
+                    matrix[day.assignedTo][day.date] = {
+                        isWeekend: day.isWeekend,
+                        isLocked: day.isLocked
+                    };
+                }
+            });
+
+            // Build HTML
+            let html = `<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Nöbet Çizelgesi</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        h1 { color: #4a5d3e; text-align: center; }
+        table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+        th, td { border: 1px solid #666; padding: 8px; text-align: center; font-size: 11px; }
+        th { background-color: #4a5d3e; color: #d4c5a9; font-weight: bold; }
+        th.weekend { background-color: #5d6e4e; }
+        td.personnel { background-color: #f4f0e6; font-weight: bold; text-align: left; white-space: nowrap; }
+        td.weekday-duty { background-color: #d4edda; font-weight: bold; }
+        td.weekend-duty { background-color: #fff3cd; font-weight: bold; }
+        td.locked-duty { background-color: #d1ecf1; font-weight: bold; }
+        td.no-duty { background-color: #ffffff; color: #ddd; }
+        .legend { margin-top: 20px; display: flex; gap: 20px; flex-wrap: wrap; }
+        .legend-item { display: flex; align-items: center; gap: 8px; }
+        .legend-box { width: 20px; height: 20px; border: 1px solid #999; }
+    </style>
+</head>
+<body>
+    <h1>🎖️ Nöbet Çizelgesi</h1>
+    <p style="text-align: center; color: #666;">Oluşturulma: ${new Date().toLocaleString('tr-TR')}</p>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Personel</th>`;
+
+            // Header with dates
+            schedule.forEach(day => {
+                const date = new Date(day.date);
+                const dayNum = date.getDate();
+                const isWeekend = day.isWeekend;
+                
+                html += `<th class="${isWeekend ? 'weekend' : ''}">
+                    <div>${day.dayName.substring(0, 3)}</div>
+                    <div style="font-size: 13px; font-weight: bold;">${dayNum}</div>
+                </th>`;
+            });
+
+            html += `</tr></thead><tbody>`;
+
+            // Data rows
+            personnel.forEach(person => {
+                html += `<tr><td class="personnel">${person.name}</td>`;
+                
+                schedule.forEach(day => {
+                    const hasDuty = matrix[person.name][day.date];
+                    
+                    if (hasDuty) {
+                        const icon = hasDuty.isLocked ? '🔒' : '✓';
+                        const className = hasDuty.isLocked ? 'locked-duty' : 
+                                        (hasDuty.isWeekend ? 'weekend-duty' : 'weekday-duty');
+                        html += `<td class="${className}">${icon}</td>`;
+                    } else {
+                        html += `<td class="no-duty">-</td>`;
+                    }
+                });
+                
+                html += `</tr>`;
+            });
+
+            html += `</tbody></table>
+    
+    <div class="legend">
+        <div class="legend-item">
+            <div class="legend-box" style="background-color: #d4edda;"></div>
+            <span>Hafta İçi Nöbet</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-box" style="background-color: #fff3cd;"></div>
+            <span>Hafta Sonu Nöbet</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-box" style="background-color: #d1ecf1;"></div>
+            <span>Sabit Nöbet (🔒)</span>
+        </div>
+    </div>
+</body>
+</html>`;
+
+            // Save as HTML file
+            const blob = new Blob([html], { type: 'text/html;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            
+            link.setAttribute('href', url);
+            link.setAttribute('download', `nobet_cizelgesi_${new Date().getTime()}.html`);
+            link.style.visibility = 'hidden';
+            
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function exportToPlainCSV() {
+            // Plain CSV list format
             let csv = 'Tarih,Gün,Görevli Personel\n';
             schedule.forEach(day => {
                 csv += `${formatDate(day.date)},${day.dayName},${day.assignedTo}\n`;
@@ -1691,12 +2017,311 @@
             const url = URL.createObjectURL(blob);
             
             link.setAttribute('href', url);
-            link.setAttribute('download', `nobet_cizelgesi_${new Date().getTime()}.csv`);
+            link.setAttribute('download', `nobet_cizelgesi_liste_${new Date().getTime()}.csv`);
             link.style.visibility = 'hidden';
             
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
+        }
+
+        // Export to Excel
+        function exportToExcel() {
+            if (schedule.length === 0) {
+                alert('Henüz çizelge oluşturulmadı.');
+                return;
+            }
+
+            // Create matrix
+            const matrix = {};
+            personnel.forEach(person => {
+                matrix[person.name] = {};
+            });
+            
+            schedule.forEach(day => {
+                if (day.assignedTo && matrix[day.assignedTo]) {
+                    matrix[day.assignedTo][day.date] = {
+                        isWeekend: day.isWeekend,
+                        isLocked: day.isLocked
+                    };
+                }
+            });
+
+            // Build HTML table for Excel with proper styling
+            let html = `
+<html xmlns:o="urn:schemas-microsoft-com:office:office" 
+      xmlns:x="urn:schemas-microsoft-com:office:excel" 
+      xmlns="http://www.w3.org/TR/REC-html40">
+<head>
+    <meta charset="UTF-8">
+    <xml>
+        <x:ExcelWorkbook>
+            <x:ExcelWorksheets>
+                <x:ExcelWorksheet>
+                    <x:Name>Nöbet Çizelgesi</x:Name>
+                    <x:WorksheetOptions>
+                        <x:Print>
+                            <x:ValidPrinterInfo/>
+                        </x:Print>
+                    </x:WorksheetOptions>
+                </x:ExcelWorksheet>
+            </x:ExcelWorksheets>
+        </x:ExcelWorkbook>
+    </xml>
+    <style>
+        table {
+            border-collapse: collapse;
+            font-family: Calibri, Arial, sans-serif;
+            font-size: 11pt;
+        }
+        th, td {
+            border: 1px solid #000000;
+            padding: 8px;
+            text-align: center;
+            vertical-align: middle;
+        }
+        th {
+            background-color: #4a5d3e;
+            color: white;
+            font-weight: bold;
+            font-size: 10pt;
+        }
+        th.weekend {
+            background-color: #d4c5a9;
+            color: #000000;
+        }
+        td.personnel {
+            background-color: #f4f0e6;
+            font-weight: bold;
+            text-align: left;
+            white-space: nowrap;
+        }
+        td.weekday-duty {
+            background-color: #d4edda;
+            font-weight: bold;
+            font-size: 16pt;
+        }
+        td.weekend-duty {
+            background-color: #fff3cd;
+            font-weight: bold;
+            font-size: 16pt;
+        }
+        td.locked-duty {
+            background-color: #d1ecf1;
+            font-weight: bold;
+            font-size: 16pt;
+        }
+        td.no-duty {
+            background-color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+    <table>
+        <thead>
+            <tr>
+                <th>PERSONEL</th>`;
+
+            // Header with dates
+            schedule.forEach(day => {
+                const date = new Date(day.date);
+                const dayNum = date.getDate();
+                const isWeekend = day.isWeekend;
+                const dayAbbr = day.dayName.substring(0, 3).toUpperCase();
+                
+                html += `<th class="${isWeekend ? 'weekend' : ''}">${dayAbbr}<br>${dayNum}</th>`;
+            });
+
+            html += `</tr></thead><tbody>`;
+
+            // Data rows
+            personnel.forEach(person => {
+                html += `<tr><td class="personnel">${person.name}</td>`;
+                
+                schedule.forEach(day => {
+                    const hasDuty = matrix[person.name][day.date];
+                    
+                    if (hasDuty) {
+                        const icon = '✓';
+                        const className = hasDuty.isLocked ? 'locked-duty' : 
+                                        (hasDuty.isWeekend ? 'weekend-duty' : 'weekday-duty');
+                        html += `<td class="${className}">${icon}</td>`;
+                    } else {
+                        html += `<td class="no-duty"></td>`;
+                    }
+                });
+                
+                html += `</tr>`;
+            });
+
+            html += `</tbody></table></body></html>`;
+
+            // Save as Excel file
+            const blob = new Blob([html], { type: 'application/vnd.ms-excel;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            
+            link.setAttribute('href', url);
+            link.setAttribute('download', `nobet_cizelgesi_${new Date().getTime()}.xls`);
+            link.style.visibility = 'hidden';
+            
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // Export to PDF
+        function exportToPDF() {
+            if (schedule.length === 0) {
+                alert('Henüz çizelge oluşturulmadı.');
+                return;
+            }
+
+            // Create a printable version
+            const printWindow = window.open('', '_blank');
+            
+            // Create matrix
+            const matrix = {};
+            personnel.forEach(person => {
+                matrix[person.name] = {};
+            });
+            
+            schedule.forEach(day => {
+                if (day.assignedTo && matrix[day.assignedTo]) {
+                    matrix[day.assignedTo][day.date] = {
+                        isWeekend: day.isWeekend,
+                        isLocked: day.isLocked
+                    };
+                }
+            });
+
+            let html = `
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Nöbet Çizelgesi</title>
+    <style>
+        @page {
+            size: A4 landscape;
+            margin: 15mm;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 10px;
+        }
+        h1 {
+            text-align: center;
+            color: #4a5d3e;
+            font-size: 18pt;
+            margin-bottom: 10px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            font-size: 9pt;
+        }
+        th, td {
+            border: 1px solid #000000;
+            padding: 6px 4px;
+            text-align: center;
+            vertical-align: middle;
+        }
+        th {
+            background-color: #4a5d3e;
+            color: white;
+            font-weight: bold;
+            font-size: 8pt;
+        }
+        th.weekend {
+            background-color: #d4c5a9;
+            color: #000000;
+        }
+        td.personnel {
+            background-color: #f4f0e6;
+            font-weight: bold;
+            text-align: left;
+            white-space: nowrap;
+            font-size: 9pt;
+        }
+        td.weekday-duty {
+            background-color: #d4edda;
+            font-weight: bold;
+            font-size: 14pt;
+        }
+        td.weekend-duty {
+            background-color: #fff3cd;
+            font-weight: bold;
+            font-size: 14pt;
+        }
+        td.locked-duty {
+            background-color: #d1ecf1;
+            font-weight: bold;
+            font-size: 14pt;
+        }
+        td.no-duty {
+            background-color: #ffffff;
+        }
+        .footer {
+            margin-top: 10px;
+            font-size: 8pt;
+            text-align: center;
+            color: #666;
+        }
+        @media print {
+            .no-print { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <h1>🎖️ Nöbet Çizelgesi</h1>
+    <button class="no-print" onclick="window.print()" style="margin-bottom: 10px; padding: 8px 16px; background: #4a5d3e; color: white; border: none; cursor: pointer; border-radius: 4px;">📄 PDF Olarak Kaydet</button>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>PERSONEL</th>`;
+
+            // Header with dates
+            schedule.forEach(day => {
+                const date = new Date(day.date);
+                const dayNum = date.getDate();
+                const isWeekend = day.isWeekend;
+                const dayAbbr = day.dayName.substring(0, 3).toUpperCase();
+                
+                html += `<th class="${isWeekend ? 'weekend' : ''}">${dayAbbr}<br>${dayNum}</th>`;
+            });
+
+            html += `</tr></thead><tbody>`;
+
+            // Data rows
+            personnel.forEach(person => {
+                html += `<tr><td class="personnel">${person.name}</td>`;
+                
+                schedule.forEach(day => {
+                    const hasDuty = matrix[person.name][day.date];
+                    
+                    if (hasDuty) {
+                        const icon = '✓';
+                        const className = hasDuty.isLocked ? 'locked-duty' : 
+                                        (hasDuty.isWeekend ? 'weekend-duty' : 'weekday-duty');
+                        html += `<td class="${className}">${icon}</td>`;
+                    } else {
+                        html += `<td class="no-duty"></td>`;
+                    }
+                });
+                
+                html += `</tr>`;
+            });
+
+            html += `</tbody></table>
+    <div class="footer">Oluşturulma Tarihi: ${new Date().toLocaleString('tr-TR')}</div>
+</body>
+</html>`;
+
+            printWindow.document.write(html);
+            printWindow.document.close();
         }
 
         // Print schedule
