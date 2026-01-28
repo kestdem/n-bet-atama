@@ -282,6 +282,18 @@
             color: #555;
         }
 
+        .personnel-actions {
+            display: flex;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        .personnel-actions button {
+            padding: 8px 16px;
+            font-size: 0.9rem;
+            white-space: nowrap;
+        }
+
         .btn-group {
             display: flex;
             gap: 10px;
@@ -525,8 +537,27 @@
 
             .personnel-item {
                 flex-direction: column;
-                align-items: flex-start;
-                gap: 10px;
+                align-items: stretch;
+                gap: 12px;
+                padding: 12px;
+            }
+
+            .personnel-info {
+                padding-bottom: 8px;
+                border-bottom: 1px solid var(--border-color);
+            }
+
+            .personnel-actions {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 8px;
+                width: 100%;
+            }
+
+            .personnel-actions button {
+                width: 100%;
+                padding: 10px;
+                font-size: 0.85rem;
             }
 
             .hint {
@@ -668,7 +699,7 @@
 <body>
     <div class="container">
         <header>
-            <h1>🎖️ Nöbet Çizelgesi Yönetim Sistemi</h1>
+            <h1>Nöbet Çizelgesi Yönetim Sistemi</h1>
         </header>
 
         <div class="tabs">
@@ -685,7 +716,7 @@
                 <h2>Personel Ekleme</h2>
                 
                 <div class="hint">
-                    💡 TXT dosyasında her satır: <strong>İsim,NöbetSayısı,İstisnaGünler</strong> formatında olmalıdır.<br>
+                     TXT dosyasında her satır: <strong>İsim,NöbetSayısı,İstisnaGünler</strong> formatında olmalıdır.<br>
                     <strong>Format:</strong> <code>"İsim","Aylık Nöbet Sayısı","(İstisna Günler - sadece gün numarası)"</code><br>
                     <strong>Örnekler:</strong><br>
                     <code>Ahmet Yılmaz,3,(5,15,20)</code> - Ayın 5, 15 ve 20'sinde nöbet tutamaz<br>
@@ -720,7 +751,7 @@
                 <h2>⚙️ Nöbet Kuralları Yapılandırması</h2>
                 
                 <div class="hint">
-                    ℹ️ Bu kurallar çizelge oluşturulurken otomatik olarak uygulanır. İhtiyacınıza göre özelleştirebilirsiniz.
+                     Bu kurallar çizelge oluşturulurken otomatik olarak uygulanır. İhtiyacınıza göre özelleştirebilirsiniz.
                 </div>
 
                 <div style="background: white; padding: 20px; border-radius: 6px; margin-bottom: 20px;">
@@ -732,7 +763,7 @@
                         <label for="max-duties-per-week">Kişi başı maksimum nöbet sayısı (haftalık):</label>
                         <input type="number" id="max-duties-per-week" min="1" max="7" value="1">
                         <p style="font-size: 0.9rem; color: #666; margin-top: 5px;">
-                            📌 Her kişi bir haftada en fazla bu kadar nöbet tutabilir.
+                             Her kişi bir haftada en fazla bu kadar nöbet tutabilir.
                         </p>
                     </div>
                 </div>
@@ -746,7 +777,7 @@
                         <label for="min-days-gap">Aynı kişinin nöbetleri arasında minimum gün sayısı:</label>
                         <input type="number" id="min-days-gap" min="0" max="14" value="3">
                         <p style="font-size: 0.9rem; color: #666; margin-top: 5px;">
-                            📌 Bir kişinin iki nöbeti arasında en az bu kadar gün olmalıdır.
+                             Bir kişinin iki nöbeti arasında en az bu kadar gün olmalıdır.
                         </p>
                     </div>
                 </div>
@@ -758,7 +789,7 @@
                     </h3>
                     <div id="rule-no-consecutive-config" class="rule-config">
                         <p style="font-size: 0.9rem; color: #666;">
-                            📌 Aynı kişi arka arkaya iki gün nöbet tutamaz (örn. Pazartesi ve Salı).
+                             Aynı kişi arka arkaya iki gün nöbet tutamaz (örn. Pazartesi ve Salı).
                         </p>
                     </div>
                 </div>
@@ -776,7 +807,7 @@
                             <option value="none">Yok: Hafta sonu/içi dengesi kontrol edilmez</option>
                         </select>
                         <p style="font-size: 0.9rem; color: #666; margin-top: 5px;">
-                            📌 Kişi başına hafta sonu ve hafta içi nöbet dağılımı dengelenir.
+                             Kişi başına hafta sonu ve hafta içi nöbet dağılımı dengelenir.
                         </p>
                     </div>
                 </div>
@@ -794,21 +825,21 @@
                             <option value="random">Rastgele: Uygun kişilerden rastgele seçilir</option>
                         </select>
                         <p style="font-size: 0.9rem; color: #666; margin-top: 5px;">
-                            📌 Nöbetler nasıl dağıtılsın?
+                             Nöbetler nasıl dağıtılsın?
                         </p>
                     </div>
                 </div>
 
                 <div class="btn-group">
-                    <button onclick="saveRules()">💾 Kuralları Kaydet</button>
-                    <button class="secondary" onclick="resetRulesToDefault()">🔄 Varsayılana Dön</button>
-                    <button class="secondary" onclick="loadPreset('relaxed')">😌 Esnek Kurallar</button>
-                    <button class="secondary" onclick="loadPreset('strict')">🎯 Katı Kurallar</button>
+                    <button onclick="saveRules()">Kuralları Kaydet</button>
+                    <button class="secondary" onclick="resetRulesToDefault()">Varsayılana Dön</button>
+                    <button class="secondary" onclick="loadPreset('relaxed')">Esnek Kurallar</button>
+                    <button class="secondary" onclick="loadPreset('strict')">Katı Kurallar</button>
                 </div>
             </div>
 
             <div class="section">
-                <h2>📊 Aktif Kurallar Özeti</h2>
+                <h2>Aktif Kurallar Özeti</h2>
                 <div id="rules-summary" style="background: white; padding: 15px; border-radius: 6px; border-left: 4px solid var(--army-green);">
                 </div>
             </div>
@@ -825,10 +856,10 @@
                 </div>
                 
                 <label for="schedule-month">Ay ve Yıl Seçin:</label>
-                <input type="month" id="schedule-month" required>
+                <input type="month" id="schedule-month" required style="margin-bottom: 20px;">
 
                 <button onclick="generateSchedule()" style="width: 100%; padding: 15px; font-size: 1.1rem;">
-                    🗓️ Çizelge Oluştur
+                    Çizelge Oluştur
                 </button>
 
                 <div id="generation-message"></div>
@@ -848,10 +879,10 @@
                 <h2>Aylık Nöbet Çizelgesi</h2>
                 
                 <div class="btn-group">
-                    <button onclick="exportToExcel()">📊 Excel Olarak Dışa Aktar</button>
-                    <button onclick="exportToPDF()">📄 PDF Olarak Dışa Aktar</button>
-                    <button class="secondary" onclick="exportToCSV()">💾 HTML/CSV Dışa Aktar</button>
-                    <button class="secondary" onclick="printSchedule()">🖨️ Yazdır</button>
+                    <button onclick="exportToExcel()">Excel İndir</button>
+                    <button onclick="exportToPDF()">PDF İndir</button>
+                    <button class="secondary" onclick="exportToCSV()">CSV İndir</button>
+                    <button class="secondary" onclick="printSchedule()">Yazdır</button>
                 </div>
 
                 <div id="schedule-table-container">
@@ -866,7 +897,7 @@
                 <h2>Nöbet Değişimi</h2>
                 
                 <div class="hint">
-                    ℹ️ İki nöbet gününü seçerek personel değişimi yapabilirsiniz.
+                     İki nöbet gününü seçerek personel değişimi yapabilirsiniz.
                 </div>
 
                 <div class="swap-controls">
@@ -884,7 +915,7 @@
                     </div>
                 </div>
 
-                <button onclick="performSwap()" style="width: 100%;">🔄 Nöbetleri Değiştir</button>
+                <button onclick="performSwap()" style="width: 100%;">Nöbetleri Değiştir</button>
 
                 <div id="swap-message"></div>
 
@@ -1202,9 +1233,9 @@
                             Sabit Nöbet: ${person.fixedDates ? person.fixedDates.length : 0}
                         </div>
                     </div>
-                    <div>
-                        <button onclick="editPersonnel(${index})">✏️ Düzenle</button>
-                        <button class="danger" onclick="deletePersonnel(${index})" style="margin-left: 5px;">🗑️ Sil</button>
+                    <div class="personnel-actions">
+                        <button class="btn-edit" onclick="editPersonnel(${index})">Düzenle</button>
+                        <button class="btn-delete danger" onclick="deletePersonnel(${index})">Sil</button>
                     </div>
                 </div>
             `}).join('');
@@ -1925,7 +1956,7 @@
                     </div>
                 </div>
                 <div style="margin-top: 10px; padding: 10px; background: #fff9e6; border-left: 4px solid #f4c542; border-radius: 4px; font-size: 0.8rem; color: #856404;">
-                    📱 <strong>İpucu:</strong> Tabloyu sağa-sola kaydırarak tüm günleri görebilirsiniz.
+                    <strong>İpucu:</strong> Tabloyu sağa-sola kaydırarak tüm günleri görebilirsiniz.
                 </div>
             `;
 
@@ -2478,7 +2509,7 @@
 </head>
 <body>
     <h1>🎖️ Nöbet Çizelgesi</h1>
-    <button class="no-print" onclick="window.print()" style="margin-bottom: 10px; padding: 8px 16px; background: #4a5d3e; color: white; border: none; cursor: pointer; border-radius: 4px;">📄 PDF Olarak Kaydet</button>
+    <button class="no-print" onclick="window.print()" style="margin-bottom: 10px; padding: 8px 16px; background: #4a5d3e; color: white; border: none; cursor: pointer; border-radius: 4px;">PDF Olarak Kaydet</button>
     
     <table>
         <thead>
