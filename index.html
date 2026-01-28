@@ -450,21 +450,57 @@
             margin-bottom: 20px;
         }
 
-        @media (max-width: 768px) {
+        /* Tablet ve Mobil Uyumluluk */
+        @media (max-width: 1024px) {
             .container {
+                padding: 15px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
                 padding: 10px;
             }
 
+            .container {
+                padding: 0;
+            }
+
+            header {
+                padding: 15px;
+                margin-bottom: 15px;
+            }
+
             header h1 {
-                font-size: 1.5rem;
+                font-size: 1.3rem;
+                letter-spacing: 1px;
             }
 
             .tabs {
-                flex-direction: column;
+                flex-wrap: wrap;
+                gap: 5px;
+                overflow-x: auto;
+                padding-bottom: 5px;
             }
 
             .tab-button {
-                width: 100%;
+                flex: 1 1 auto;
+                min-width: 120px;
+                padding: 10px 15px;
+                font-size: 0.8rem;
+            }
+
+            .section {
+                padding: 15px;
+                margin-bottom: 15px;
+            }
+
+            .section h2 {
+                font-size: 1.1rem;
             }
 
             .swap-controls {
@@ -477,6 +513,154 @@
 
             button {
                 width: 100%;
+                padding: 12px 20px;
+                font-size: 0.9rem;
+            }
+
+            .modal-content {
+                padding: 20px;
+                width: 95%;
+                max-height: 85vh;
+            }
+
+            .personnel-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .hint {
+                font-size: 0.85rem;
+                padding: 10px;
+            }
+
+            table {
+                font-size: 0.75rem;
+            }
+
+            th, td {
+                padding: 6px 3px;
+            }
+
+            th {
+                font-size: 0.7rem;
+            }
+
+            .stat-card {
+                padding: 12px;
+            }
+
+            .stat-value {
+                font-size: 1.5rem;
+            }
+
+            .stat-label {
+                font-size: 0.8rem;
+            }
+
+            /* Tablo yatay scroll için */
+            .schedule-table-container {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            /* Stats grid tek sütun */
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            header h1 {
+                font-size: 1.1rem;
+                letter-spacing: 0.5px;
+            }
+
+            .tab-button {
+                min-width: 100px;
+                padding: 8px 12px;
+                font-size: 0.75rem;
+            }
+
+            .section {
+                padding: 12px;
+            }
+
+            .section h2 {
+                font-size: 1rem;
+            }
+
+            button {
+                padding: 10px 16px;
+                font-size: 0.85rem;
+            }
+
+            input[type="text"],
+            input[type="number"],
+            input[type="date"],
+            input[type="month"],
+            textarea,
+            select {
+                font-size: 16px; /* iOS zoom önleme */
+                padding: 8px;
+            }
+
+            .personnel-name {
+                font-size: 1rem;
+            }
+
+            .personnel-constraints {
+                font-size: 0.8rem;
+            }
+
+            table {
+                font-size: 0.7rem;
+            }
+
+            th, td {
+                padding: 4px 2px;
+            }
+
+            th div {
+                font-size: 0.65rem;
+            }
+
+            .stat-value {
+                font-size: 1.3rem;
+            }
+
+            .modal-content {
+                padding: 15px;
+            }
+
+            .modal-header h2 {
+                font-size: 1.1rem;
+            }
+        }
+
+        /* Landscape mode için ekstra optimizasyonlar */
+        @media (max-width: 768px) and (orientation: landscape) {
+            body {
+                padding: 5px;
+            }
+
+            header {
+                padding: 10px;
+                margin-bottom: 10px;
+            }
+
+            header h1 {
+                font-size: 1rem;
+            }
+
+            .section {
+                padding: 10px;
+                margin-bottom: 10px;
+            }
+
+            .modal-content {
+                max-height: 95vh;
             }
         }
     </style>
@@ -484,7 +668,7 @@
 <body>
     <div class="container">
         <header>
-            <h1>Nöbet Çizelgesi Yönetim Sistemi</h1>
+            <h1>🎖️ Nöbet Çizelgesi Yönetim Sistemi</h1>
         </header>
 
         <div class="tabs">
@@ -1675,21 +1859,22 @@
                 }
             });
 
-            // Build table HTML
-            let tableHTML = '<div style="overflow-x: auto;"><table style="min-width: 100%;">';
+            // Build table HTML - mobil dostu
+            let tableHTML = '<div class="schedule-table-container" style="overflow-x: auto; -webkit-overflow-scrolling: touch; border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);"><table style="min-width: 100%; width: max-content;">';
             
             // Header row with dates
             tableHTML += '<thead><tr>';
-            tableHTML += '<th style="position: sticky; left: 0; z-index: 10; background: var(--army-green);">Personel</th>';
+            tableHTML += '<th style="position: sticky; left: 0; z-index: 10; background: var(--army-green); min-width: 100px;">Personel</th>';
             
             schedule.forEach(day => {
                 const date = new Date(day.date);
                 const dayNum = date.getDate();
                 const isWeekend = day.isWeekend;
+                const monthName = date.toLocaleDateString('tr-TR', { month: 'short' });
                 
-                tableHTML += `<th style="text-align: center; min-width: 45px; ${isWeekend ? 'background: #5d6e4e;' : ''}" title="${formatDate(day.date)} - ${day.dayName}">
-                    <div style="font-size: 0.75rem;">${day.dayName.substring(0, 3)}</div>
-                    <div style="font-size: 1.1rem; font-weight: bold;">${dayNum}</div>
+                tableHTML += `<th style="text-align: center; min-width: 40px; padding: 8px 4px; ${isWeekend ? 'background: #5d6e4e;' : ''}" title="${formatDate(day.date)} - ${day.dayName}">
+                    <div style="font-size: 0.7rem; line-height: 1.2;">${day.dayName.substring(0, 3)}</div>
+                    <div style="font-size: 1rem; font-weight: bold; line-height: 1.2;">${dayNum}</div>
                 </th>`;
             });
             
@@ -1698,7 +1883,7 @@
             // Data rows - one per person
             personnel.forEach(person => {
                 tableHTML += '<tr>';
-                tableHTML += `<td style="position: sticky; left: 0; z-index: 5; background: var(--light-bg); font-weight: bold; white-space: nowrap;">
+                tableHTML += `<td style="position: sticky; left: 0; z-index: 5; background: var(--light-bg); font-weight: bold; white-space: nowrap; padding: 8px; min-width: 100px;">
                     ${person.name}
                 </td>`;
                 
@@ -1709,12 +1894,12 @@
                     if (hasDuty) {
                         const icon = hasDuty.isLocked ? '🔒' : '✓';
                         const bgColor = hasDuty.isLocked ? '#d1ecf1' : (isWeekend ? '#fff3cd' : '#d4edda');
-                        tableHTML += `<td style="text-align: center; background: ${bgColor}; font-size: 1.3rem; font-weight: bold;">
+                        tableHTML += `<td style="text-align: center; background: ${bgColor}; font-size: 1.2rem; font-weight: bold; padding: 8px 4px;">
                             ${icon}
                         </td>`;
                     } else {
                         const bgColor = isWeekend ? '#f8f8f8' : 'white';
-                        tableHTML += `<td style="text-align: center; background: ${bgColor}; color: #ddd;">-</td>`;
+                        tableHTML += `<td style="text-align: center; background: ${bgColor}; color: #ddd; padding: 8px 4px;">-</td>`;
                     }
                 });
                 
@@ -1723,12 +1908,24 @@
             
             tableHTML += '</tbody></table></div>';
             
-            // Add legend
+            // Add legend - mobil uyumlu
             tableHTML += `
-                <div style="margin-top: 20px; padding: 15px; background: var(--light-bg); border-radius: 6px; display: flex; gap: 20px; flex-wrap: wrap;">
-                    <div><span style="display: inline-block; width: 20px; height: 20px; background: #d4edda; border: 1px solid #999; vertical-align: middle;"></span> Hafta İçi Nöbet</div>
-                    <div><span style="display: inline-block; width: 20px; height: 20px; background: #fff3cd; border: 1px solid #999; vertical-align: middle;"></span> Hafta Sonu Nöbet</div>
-                    <div><span style="display: inline-block; width: 20px; height: 20px; background: #d1ecf1; border: 1px solid #999; vertical-align: middle;"></span> Sabit Nöbet (🔒)</div>
+                <div style="margin-top: 15px; padding: 12px; background: var(--light-bg); border-radius: 6px; display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; font-size: 0.85rem;">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span style="display: inline-block; width: 18px; height: 18px; background: #d4edda; border: 1px solid #999; border-radius: 2px; flex-shrink: 0;"></span>
+                        <span>Hafta İçi</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span style="display: inline-block; width: 18px; height: 18px; background: #fff3cd; border: 1px solid #999; border-radius: 2px; flex-shrink: 0;"></span>
+                        <span>Hafta Sonu</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span style="display: inline-block; width: 18px; height: 18px; background: #d1ecf1; border: 1px solid #999; border-radius: 2px; flex-shrink: 0;"></span>
+                        <span>Sabit (🔒)</span>
+                    </div>
+                </div>
+                <div style="margin-top: 10px; padding: 10px; background: #fff9e6; border-left: 4px solid #f4c542; border-radius: 4px; font-size: 0.8rem; color: #856404;">
+                    📱 <strong>İpucu:</strong> Tabloyu sağa-sola kaydırarak tüm günleri görebilirsiniz.
                 </div>
             `;
 
@@ -2280,7 +2477,7 @@
     </style>
 </head>
 <body>
-    <h1>Nöbet Çizelgesi</h1>
+    <h1>🎖️ Nöbet Çizelgesi</h1>
     <button class="no-print" onclick="window.print()" style="margin-bottom: 10px; padding: 8px 16px; background: #4a5d3e; color: white; border: none; cursor: pointer; border-radius: 4px;">📄 PDF Olarak Kaydet</button>
     
     <table>
