@@ -2621,7 +2621,7 @@
                 const isWeekend = day.isWeekend;
                 const dayName = day.dayName.toUpperCase();
                 
-                html += `<th class="day-header ${isWeekend ? 'weekend' : ''}">${dayName} ${dayNum}</th>`;
+                html += `<th class="day-header ${isWeekend ? 'weekend' : ''}">${dayNum} ${dayName}</th>`;
             });
 
             html += `</tr></thead><tbody>`;
